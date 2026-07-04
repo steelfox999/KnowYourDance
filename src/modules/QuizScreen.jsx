@@ -62,11 +62,7 @@ export default function QuizScreen({ config, session, onNext }) {
   return (
     <section ref={containerRef} className="view-screen active">
       <GlassCard className="glass-card-md" showCorners={false}>
-        <div className="card-header card-header-split quiz-header">
-          <div>
-            <span>Begin Trial - Resonance Test</span>
-            <p>There are no right or wrong answers. Select what speaks to your spirit.</p>
-          </div>
+        <div className="quiz-count">
           <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
         </div>
 
@@ -76,7 +72,6 @@ export default function QuizScreen({ config, session, onNext }) {
 
         <div ref={optionsContainerRef} className="quiz-options">
           {(currentQuestion.options || []).map((option, optionIndex) => {
-            const primaryTrait = Object.keys(option.traits || {})[0] || 'Spirit';
             return (
               <button
                 type="button"
@@ -86,7 +81,6 @@ export default function QuizScreen({ config, session, onNext }) {
                 className="quiz-opt-card quiz-option-anim"
               >
                 <span className="quiz-opt-header">
-                  <span className="quiz-opt-tag">{primaryTrait}</span>
                   <span className="quiz-opt-letter">{String.fromCharCode(65 + optionIndex)}</span>
                 </span>
                 <span className="quiz-opt-text">{option.label}</span>

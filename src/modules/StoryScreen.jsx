@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import { ArrowRight } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 
 export default function StoryScreen({ config, onNext }) {
@@ -30,11 +31,11 @@ export default function StoryScreen({ config, onNext }) {
         }
 
         setCurrentBeatIndex(nextIndex);
-          gsap.fromTo(
-            textRef.current,
-            { opacity: 0, y: 10 },
-            { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', clearProps: 'all' }
-          );
+        gsap.fromTo(
+          textRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', clearProps: 'all' }
+        );
       },
     });
   };
@@ -66,7 +67,7 @@ export default function StoryScreen({ config, onNext }) {
 
         <button type="button" onClick={handleNext} className="btn-secondary">
           <span>{currentBeatIndex === beats.length - 1 ? 'Begin trial' : 'Continue'}</span>
-          <span className="arrow">-&gt;</span>
+          <ArrowRight className="arrow" size={18} strokeWidth={1.8} aria-hidden="true" />
         </button>
       </GlassCard>
     </section>

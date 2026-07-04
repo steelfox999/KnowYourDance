@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import confetti from 'canvas-confetti';
+import { ArrowRight } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 import { runReveal } from './selection.js';
 import { getDanceProfile } from './dance-profiles.js';
@@ -69,8 +70,8 @@ export default function RevealScreen({ config, session, onNext }) {
             </div>
 
             <button type="button" onClick={onNext} className="btn-royal reveal-action">
-              <span>Capture portrait</span>
-              <span className="arrow">-&gt;</span>
+              <span>Create keepsake</span>
+              <ArrowRight className="arrow" size={18} strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Maximize2, Printer, RotateCcw, X } from 'lucide-react';
+import { Maximize2, RotateCcw, X } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 import { getDanceProfile } from './dance-profiles.js';
 
@@ -22,8 +22,13 @@ export default function ResultsScreen({ config, session, onNext, onReset }) {
         .fromTo('.results-actions', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.25');
     }, containerRef);
 
-    return () => ctx.revert();
-  }, []);
+    const printTimer = window.setTimeout(() => onNext(), 4000);
+
+    return () => {
+      window.clearTimeout(printTimer);
+      ctx.revert();
+    };
+  }, [onNext]);
 
   return (
     <section ref={containerRef} className="view-screen active">
@@ -81,10 +86,7 @@ export default function ResultsScreen({ config, session, onNext, onReset }) {
                 <RotateCcw size={18} />
                 <span>Start Over</span>
               </button>
-              <button type="button" onClick={onNext} className="btn-royal">
-                <Printer size={18} />
-                <span>Print Keepsake</span>
-              </button>
+              <p className="auto-print-copy">Printing starts automatically.</p>
             </div>
           </div>
         </div>

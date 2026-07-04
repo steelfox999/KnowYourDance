@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Camera, Check, RefreshCw, Upload } from 'lucide-react';
+import { Camera, RefreshCw } from 'lucide-react';
 
 export default function CameraScreen({ session, onNext, onGoTo }) {
   const [stream, setStream] = useState(null);
-  const [photoDataUrl, setPhotoDataUrl] = useState(null);
-  const [statusText, setStatusText] = useState('Pose in the frame below.');
+  const [statusText, setStatusText] = useState('Align your face in the guide before pressing Capture Portrait.');
   const [countdownNum, setCountdownNum] = useState(null);
   const [cameraError, setCameraError] = useState(false);
   const [flashVisible, setFlashVisible] = useState(false);
@@ -27,15 +26,15 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
         activeStream = mediaStream;
         setStream(mediaStream);
         if (videoRef.current) videoRef.current.srcObject = mediaStream;
-        setStatusText('Align your face, then tap Snap Photo.');
+        setStatusText('Align your face in the guide before pressing Capture Portrait.');
       } catch (err) {
         console.error('Camera access error:', err);
         setCameraError(true);
-        setStatusText('No camera detected. Upload a portrait photo to continue.');
+        setStatusText('Camera unavailable. Please check the camera connection.');
       }
     }
 
-    if (!photoDataUrl) initCamera();
+    initCamera();
 
     gsap.fromTo(
       containerRef.current,
@@ -46,7 +45,7 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
     return () => {
       if (activeStream) activeStream.getTracks().forEach((track) => track.stop());
     };
-  }, [photoDataUrl]);
+  }, []);
 
   const stopStream = () => {
     if (stream) {
@@ -106,30 +105,13 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
     ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, width, height);
 
+    session.photo = canvas.toDataURL('image/jpeg', 0.92);
     setFlashVisible(true);
-    window.setTimeout(() => setFlashVisible(false), 300);
-    handleCapture(canvas.toDataURL('image/jpeg', 0.92));
-  };
-
-  const handleCapture = (dataUrl) => {
-    session.photo = dataUrl;
-    setPhotoDataUrl(dataUrl);
     stopStream();
-    setStatusText('Portrait captured. Use this image for mask alignment?');
+    window.setTimeout(() => onNext(), 420);
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => handleCapture(reader.result);
-    reader.readAsDataURL(file);
-  };
-
-  const handleRetake = () => {
-    session.photo = null;
-    setPhotoDataUrl(null);
+  const handleRetry = () => {
     setCameraError(false);
     onGoTo('camera');
   };
@@ -143,28 +125,24 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
         <div className="ornament ornament-br" />
 
         <div className="camera-header">
-          <div className="tag-pill">Final Step</div>
-          <h2 className="font-serif">{photoDataUrl ? 'Portrait captured' : 'Are you ready to know your artform?'}</h2>
+          <div className="tag-pill">Portrait Capture</div>
+          <h2 className="font-serif">Align Your Face</h2>
           <p>{statusText}</p>
         </div>
 
         <div className="camera-viewport">
-          {!photoDataUrl && !cameraError && (
+          {!cameraError && (
             <video ref={videoRef} autoPlay playsInline muted />
           )}
 
-          {photoDataUrl && (
-            <img src={photoDataUrl} alt="Visitor portrait preview" />
-          )}
-
-          {cameraError && !photoDataUrl && (
+          {cameraError && (
             <div className="camera-fallback">
               <Camera size={48} strokeWidth={1.5} />
-              <p>Camera unavailable. Select a portrait image from this device.</p>
+              <p>Camera unavailable. Please ask a staff member to check the camera connection.</p>
             </div>
           )}
 
-          {!photoDataUrl && !cameraError && (
+          {!cameraError && (
             <div className="silhouette-guide">
               <svg viewBox="0 0 400 300" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M 90 270 L 90 140 A 110 110 0 0 1 310 140 L 310 270" strokeLinecap="round" />
@@ -188,37 +166,21 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
         <canvas ref={canvasRef} className="hidden" />
 
         <div className="camera-controls">
-          {!photoDataUrl ? (
-            <>
-              {!cameraError && (
-                <button
-                  type="button"
-                  onClick={startCountdown}
-                  disabled={countdownNum !== null}
-                  className="btn-royal"
-                >
-                  <Camera size={18} />
-                  <span>Snap Photo</span>
-                </button>
-              )}
-
-              <label className={cameraError ? 'btn-royal' : 'btn-outline'}>
-                <Upload size={18} />
-                <span>{cameraError ? 'Upload Portrait' : 'Upload Photo'}</span>
-                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-              </label>
-            </>
+          {!cameraError ? (
+            <button
+              type="button"
+              onClick={startCountdown}
+              disabled={countdownNum !== null}
+              className="btn-royal"
+            >
+              <Camera size={18} />
+              <span>Capture Portrait</span>
+            </button>
           ) : (
-            <>
-              <button type="button" onClick={handleRetake} className="btn-outline">
-                <RefreshCw size={18} />
-                <span>Retake</span>
-              </button>
-              <button type="button" onClick={onNext} className="btn-royal">
-                <Check size={18} />
-                <span>Use Photo</span>
-              </button>
-            </>
+            <button type="button" onClick={handleRetry} className="btn-outline">
+              <RefreshCw size={18} />
+              <span>Retry Camera</span>
+            </button>
           )}
         </div>
       </div>

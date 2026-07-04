@@ -34,6 +34,14 @@ export default function PrintScreen({ config, session, onNext }) {
     })();
   }, [config, session]);
 
+  useEffect(() => {
+    if (!sheetDataUrl || isPrinting) return undefined;
+    const timer = window.setTimeout(() => {
+      doPrint();
+    }, 650);
+    return () => window.clearTimeout(timer);
+  }, [sheetDataUrl, isPrinting]);
+
   const doPrint = async () => {
     if (!sheetDataUrl || isPrinting) return;
 
@@ -60,8 +68,9 @@ export default function PrintScreen({ config, session, onNext }) {
       setTimeout(() => onNext(), 1200);
     } catch (err) {
       console.error('Printing error:', err);
-      setStatusText('Printing failed. You can skip to the digital copy.');
+      setStatusText('Printing failed. Continuing to digital copy.');
       setIsPrinting(false);
+      setTimeout(() => onNext(), 1800);
     }
   };
 
@@ -81,19 +90,9 @@ export default function PrintScreen({ config, session, onNext }) {
           <canvas ref={canvasRef} />
         </div>
 
-        <div className="camera-controls print-actions">
-          <button type="button" onClick={onNext} disabled={isPrinting} className="btn-outline">
-            <span>Skip</span>
-          </button>
-          <button
-            type="button"
-            onClick={doPrint}
-            disabled={!sheetDataUrl || isPrinting}
-            className="btn-royal"
-          >
-            {isPrinting ? <Loader2 size={18} className="spin-icon" /> : <Printer size={18} />}
-            <span>{isPrinting ? 'Printing...' : 'Print Sheet'}</span>
-          </button>
+        <div className="auto-print-status">
+          {isPrinting ? <Loader2 size={18} className="spin-icon" /> : <Printer size={18} />}
+          <span>{isPrinting ? 'Printing...' : 'Printing starts automatically'}</span>
         </div>
       </GlassCard>
     </section>

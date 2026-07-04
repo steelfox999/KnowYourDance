@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ArrowRight } from 'lucide-react';
 
 export default function IdleScreen({ config, onNext }) {
   const containerRef = useRef(null);
@@ -61,7 +62,7 @@ export default function IdleScreen({ config, onNext }) {
 
       <button type="button" onClick={onNext} className="btn-royal idle-anim">
         <span>Start the experience</span>
-        <span className="arrow">-&gt;</span>
+        <ArrowRight className="arrow" size={18} strokeWidth={1.8} aria-hidden="true" />
       </button>
     </section>
   );
