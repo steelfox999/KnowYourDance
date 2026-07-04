@@ -178,15 +178,15 @@ async function composeWidePolaroidSheet(cfg, session, print, canvas, previewCanv
 
   drawSubtleBackground(ctx, W, H);
 
-  const cardX = Math.round(W * 0.045);
-  const cardY = Math.round(H * 0.055);
+  const cardX = Math.round(W * 0.055);
+  const cardY = Math.round(H * 0.06);
   const cardW = W - cardX * 2;
   const cardH = H - cardY * 2;
 
   ctx.save();
   ctx.shadowColor = 'rgba(44, 36, 27, 0.12)';
-  ctx.shadowBlur = Math.round(W * 0.018);
-  ctx.shadowOffsetY = Math.round(H * 0.012);
+  ctx.shadowBlur = Math.round(W * 0.02);
+  ctx.shadowOffsetY = Math.round(H * 0.014);
   ctx.fillStyle = '#fffdf7';
   ctx.fillRect(cardX, cardY, cardW, cardH);
   ctx.restore();
@@ -195,70 +195,76 @@ async function composeWidePolaroidSheet(cfg, session, print, canvas, previewCanv
   ctx.lineWidth = Math.max(2, Math.round(W * 0.0009));
   ctx.strokeRect(cardX, cardY, cardW, cardH);
 
-  const inner = Math.round(cardW * 0.045);
-  const headerY = cardY + Math.round(cardH * 0.075);
+  const innerX = Math.round(cardW * 0.046);
+  const topInset = Math.round(cardH * 0.075);
+  const photoX = cardX + innerX;
+  const photoY = cardY + topInset;
+  const photoW = cardW - innerX * 2;
+  const photoH = Math.round(cardH * 0.575);
+  const paneGap = Math.max(10, Math.round(W * 0.004));
+  const paneCount = Math.max(images.length, 1);
+  const paneW = (photoW - paneGap * (paneCount - 1)) / paneCount;
 
-  ctx.fillStyle = '#8E341B';
-  ctx.textAlign = 'center';
-  ctx.font = `${Math.round(H * 0.042)}px "Didact Gothic", sans-serif`;
-  ctx.fillText('Know Your Dance', cardX + cardW / 2, headerY);
-
-  ctx.fillStyle = '#C09A3F';
-  ctx.font = `500 ${Math.round(H * 0.017)}px "Albert Sans", sans-serif`;
-  ctx.letterSpacing = '0px';
-  ctx.fillText('EXHIBIT SOUVENIR - A5 LANDSCAPE PORTRAIT STRIP', cardX + cardW / 2, headerY + Math.round(H * 0.035));
-
-  const imageTop = cardY + Math.round(cardH * 0.165);
-  const imageH = Math.round(cardH * 0.49);
-  const imageW = Math.round(imageH * 0.72);
-  const gap = (cardW - inner * 2 - imageW * 3) / 2;
-  const startX = cardX + inner;
-  const imageBoxes = [
-    { x: startX, y: imageTop, w: imageW, h: imageH },
-    { x: startX + imageW + gap, y: imageTop, w: imageW, h: imageH },
-    { x: startX + (imageW + gap) * 2, y: imageTop, w: imageW, h: imageH },
-  ];
+  ctx.fillStyle = '#1F1916';
+  ctx.fillRect(photoX, photoY, photoW, photoH);
 
   images.forEach((img, index) => {
-    const box = imageBoxes[index];
-    if (!box) return;
-    drawPolaroidPortrait(ctx, img, box, labels[order[index]] || order[index], index === 1);
+    const pane = {
+      x: photoX + index * (paneW + paneGap),
+      y: photoY,
+      w: paneW,
+      h: photoH,
+    };
+    drawTriptychPane(ctx, img, pane, labels[order[index]] || order[index], order[index] === 'original');
   });
 
-  const captionY = imageTop + imageH + Math.round(cardH * 0.105);
-  const textX = cardX + inner;
-  const textW = cardW - inner * 2;
+  for (let i = 1; i < paneCount; i++) {
+    const x = photoX + i * paneW + (i - 0.5) * paneGap;
+    ctx.fillStyle = '#fffdf7';
+    ctx.fillRect(x - paneGap / 2, photoY, paneGap, photoH);
+  }
+
+  ctx.strokeStyle = '#C09A3F';
+  ctx.lineWidth = Math.max(3, Math.round(W * 0.0012));
+  ctx.strokeRect(photoX, photoY, photoW, photoH);
+
+  const captionY = photoY + photoH + Math.round(cardH * 0.095);
+  const textX = cardX + innerX;
+  const textW = cardW - innerX * 2;
 
   ctx.strokeStyle = '#E2D7C1';
   ctx.lineWidth = Math.max(1, Math.round(W * 0.0006));
   ctx.beginPath();
-  ctx.moveTo(textX, captionY - Math.round(H * 0.04));
-  ctx.lineTo(textX + textW, captionY - Math.round(H * 0.04));
+  ctx.moveTo(textX, captionY - Math.round(H * 0.042));
+  ctx.lineTo(textX + textW, captionY - Math.round(H * 0.042));
   ctx.stroke();
 
   ctx.textAlign = 'left';
   ctx.fillStyle = '#8E341B';
-  ctx.font = `${Math.round(H * 0.032)}px "Didact Gothic", sans-serif`;
-  ctx.fillText(character.name || 'Your Chosen Mask', textX, captionY);
+  ctx.font = `${Math.round(H * 0.036)}px "Didact Gothic", sans-serif`;
+  ctx.fillText('Know Your Dance', textX, captionY);
 
   ctx.fillStyle = '#C09A3F';
-  ctx.font = `500 ${Math.round(H * 0.014)}px "Albert Sans", sans-serif`;
+  ctx.font = `600 ${Math.round(H * 0.014)}px "Albert Sans", sans-serif`;
   ctx.textAlign = 'right';
-  ctx.fillText('VAR 1  |  ORIGINAL  |  VAR 2', textX + textW, captionY);
+  ctx.fillText(character.name || 'Your Chosen Mask', textX + textW, captionY);
 
   ctx.textAlign = 'left';
   ctx.fillStyle = '#2C241B';
+  ctx.font = `500 ${Math.round(H * 0.017)}px "Albert Sans", sans-serif`;
+  ctx.fillText('MASK VAR 1  /  ORIGINAL PORTRAIT  /  MASK VAR 2', textX, captionY + Math.round(H * 0.035));
+
   ctx.font = `${Math.round(H * 0.018)}px "Albert Sans", sans-serif`;
   const description = [
     session.revealText || `Your answers aligned with ${character.name || 'this mask'}.`,
     character.title ? `Chosen mask: ${character.title}.` : '',
   ].filter(Boolean).join(' ');
-  wrapText(ctx, description, textX, captionY + Math.round(H * 0.043), textW, Math.round(H * 0.03), 3);
+  wrapText(ctx, description, textX, captionY + Math.round(H * 0.075), textW, Math.round(H * 0.029), 3);
 
   ctx.fillStyle = '#8A7B6E';
-  ctx.font = `500 ${Math.round(H * 0.013)}px "Albert Sans", sans-serif`;
+  ctx.font = `500 ${Math.round(H * 0.012)}px "Albert Sans", sans-serif`;
   ctx.textAlign = 'center';
-  ctx.fillText('KNOW YOUR DANCE - TAKE HOME PRINT', cardX + cardW / 2, cardY + cardH - Math.round(H * 0.035));
+  ctx.fillText('EXHIBIT SOUVENIR - A5 LANDSCAPE INSTANT PRINT', cardX + cardW / 2, cardY + cardH - Math.round(H * 0.028));
 
   drawPreview(canvas, previewCanvas);
 }
@@ -282,34 +288,26 @@ function drawSubtleBackground(ctx, W, H) {
   }
 }
 
-function drawPolaroidPortrait(ctx, img, box, label, isOriginal) {
-  const border = Math.round(box.w * 0.045);
-  const bottom = Math.round(box.h * 0.12);
-  const imageBox = {
-    x: box.x + border,
-    y: box.y + border,
-    w: box.w - border * 2,
-    h: box.h - border * 2 - bottom,
-  };
+function drawTriptychPane(ctx, img, pane, label, isOriginal) {
+  drawCover(ctx, img, pane.x, pane.y, pane.w, pane.h);
 
-  ctx.save();
-  ctx.shadowColor = 'rgba(44, 36, 27, 0.14)';
-  ctx.shadowBlur = Math.round(box.w * 0.035);
-  ctx.shadowOffsetY = Math.round(box.h * 0.018);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(box.x, box.y, box.w, box.h);
-  ctx.restore();
+  const labelH = Math.round(pane.h * 0.085);
+  const gradient = ctx.createLinearGradient(0, pane.y + pane.h - labelH * 1.8, 0, pane.y + pane.h);
+  gradient.addColorStop(0, 'rgba(31, 25, 22, 0)');
+  gradient.addColorStop(1, 'rgba(31, 25, 22, 0.66)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(pane.x, pane.y + pane.h - labelH * 1.8, pane.w, labelH * 1.8);
 
-  ctx.strokeStyle = isOriginal ? '#C09A3F' : '#E2D7C1';
-  ctx.lineWidth = isOriginal ? Math.max(3, Math.round(box.w * 0.006)) : Math.max(1, Math.round(box.w * 0.003));
-  ctx.strokeRect(box.x, box.y, box.w, box.h);
+  if (isOriginal) {
+    ctx.strokeStyle = '#F3C969';
+    ctx.lineWidth = Math.max(3, Math.round(pane.w * 0.01));
+    ctx.strokeRect(pane.x + 1, pane.y + 1, pane.w - 2, pane.h - 2);
+  }
 
-  drawCover(ctx, img, imageBox.x, imageBox.y, imageBox.w, imageBox.h);
-
-  ctx.fillStyle = isOriginal ? '#8E341B' : '#8A7B6E';
+  ctx.fillStyle = '#FFF8E9';
   ctx.textAlign = 'center';
-  ctx.font = `500 ${Math.round(box.h * 0.032)}px "Albert Sans", sans-serif`;
-  ctx.fillText(label.toUpperCase(), box.x + box.w / 2, box.y + box.h - Math.round(bottom * 0.38));
+  ctx.font = `600 ${Math.round(pane.h * 0.032)}px "Albert Sans", sans-serif`;
+  ctx.fillText(label.toUpperCase(), pane.x + pane.w / 2, pane.y + pane.h - Math.round(labelH * 0.42));
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
