@@ -8,6 +8,10 @@
       "label": "Somana Kunitha guardian mask",
       "mask": {
         "asset": "assets/masks/generated/somana-kunitha-01.png",
+        "variantAssets": [
+          "assets/masks/generated/somana-kunitha-01.png",
+          "assets/masks/generated/somana-kunitha-02.png"
+        ],
         "anchor": "head",
         "scale": 1.18,
         "offsetY": -0.02,
@@ -19,6 +23,10 @@
       "label": "Chau heroic mask",
       "mask": {
         "asset": "assets/masks/generated/chau-01.png",
+        "variantAssets": [
+          "assets/masks/generated/chau-01.png",
+          "assets/masks/generated/chau-02.png"
+        ],
         "anchor": "head",
         "scale": 1.22,
         "offsetY": -0.08,
@@ -30,6 +38,10 @@
       "label": "Bardo Chham animal mask",
       "mask": {
         "asset": "assets/masks/generated/bardo-chham-01.png",
+        "variantAssets": [
+          "assets/masks/generated/bardo-chham-01.png",
+          "assets/masks/generated/bardo-chham-02.png"
+        ],
         "anchor": "head",
         "scale": 1.16,
         "offsetY": -0.03,
@@ -41,6 +53,10 @@
       "label": "Gomira fierce mask",
       "mask": {
         "asset": "assets/masks/generated/gomira-01.png",
+        "variantAssets": [
+          "assets/masks/generated/gomira-01.png",
+          "assets/masks/generated/gomira-02.png"
+        ],
         "anchor": "head",
         "scale": 1.2,
         "offsetY": -0.02,

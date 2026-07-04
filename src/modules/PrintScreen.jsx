@@ -76,7 +76,7 @@ export default function PrintScreen({ config, session, onNext }) {
 
   return (
     <section ref={containerRef} className="view-screen active">
-      <GlassCard className="glass-card-sm print-card">
+      <GlassCard className="glass-card-md print-card">
         <div className="card-header">
           <span>Exhibition Keepsake</span>
           <p>{statusText}</p>
@@ -123,6 +123,11 @@ async function composeSheet(cfg, session, previewCanvas) {
   ctx.fillStyle = print.background || '#ffffff';
   ctx.fillRect(0, 0, W, H);
 
+  if (print.layout === 'wide-polaroid-triptych') {
+    await composeWidePolaroidSheet(cfg, session, print, canvas, previewCanvas, W, H);
+    return canvas.toDataURL('image/png');
+  }
+
   const grid = print.grid || { cols: 2, rows: 2 };
   const margin = frac(print.marginPct, 0.05) * Math.min(W, H);
   const gutter = frac(print.gutterPct, 0.03) * Math.min(W, H);
@@ -162,6 +167,180 @@ async function composeSheet(cfg, session, previewCanvas) {
   previewCtx.drawImage(canvas, 0, 0, previewW, previewH);
 
   return canvas.toDataURL('image/png');
+}
+
+async function composeWidePolaroidSheet(cfg, session, print, canvas, previewCanvas, W, H) {
+  const ctx = canvas.getContext('2d');
+  const order = (print.order || ['maskVar1', 'original', 'maskVar2']).filter((key) => session.outputs?.[key]);
+  const images = await Promise.all(order.map((key) => loadImage(session.outputs[key])));
+  const labels = print.labels || {};
+  const character = session.character || {};
+
+  drawSubtleBackground(ctx, W, H);
+
+  const cardX = Math.round(W * 0.045);
+  const cardY = Math.round(H * 0.055);
+  const cardW = W - cardX * 2;
+  const cardH = H - cardY * 2;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(44, 36, 27, 0.12)';
+  ctx.shadowBlur = Math.round(W * 0.018);
+  ctx.shadowOffsetY = Math.round(H * 0.012);
+  ctx.fillStyle = '#fffdf7';
+  ctx.fillRect(cardX, cardY, cardW, cardH);
+  ctx.restore();
+
+  ctx.strokeStyle = '#E2D7C1';
+  ctx.lineWidth = Math.max(2, Math.round(W * 0.0009));
+  ctx.strokeRect(cardX, cardY, cardW, cardH);
+
+  const inner = Math.round(cardW * 0.045);
+  const headerY = cardY + Math.round(cardH * 0.075);
+
+  ctx.fillStyle = '#8E341B';
+  ctx.textAlign = 'center';
+  ctx.font = `${Math.round(H * 0.042)}px "Didact Gothic", sans-serif`;
+  ctx.fillText('Know Your Dance', cardX + cardW / 2, headerY);
+
+  ctx.fillStyle = '#C09A3F';
+  ctx.font = `500 ${Math.round(H * 0.017)}px "Albert Sans", sans-serif`;
+  ctx.letterSpacing = '0px';
+  ctx.fillText('EXHIBIT SOUVENIR - A5 LANDSCAPE PORTRAIT STRIP', cardX + cardW / 2, headerY + Math.round(H * 0.035));
+
+  const imageTop = cardY + Math.round(cardH * 0.165);
+  const imageH = Math.round(cardH * 0.49);
+  const imageW = Math.round(imageH * 0.72);
+  const gap = (cardW - inner * 2 - imageW * 3) / 2;
+  const startX = cardX + inner;
+  const imageBoxes = [
+    { x: startX, y: imageTop, w: imageW, h: imageH },
+    { x: startX + imageW + gap, y: imageTop, w: imageW, h: imageH },
+    { x: startX + (imageW + gap) * 2, y: imageTop, w: imageW, h: imageH },
+  ];
+
+  images.forEach((img, index) => {
+    const box = imageBoxes[index];
+    if (!box) return;
+    drawPolaroidPortrait(ctx, img, box, labels[order[index]] || order[index], index === 1);
+  });
+
+  const captionY = imageTop + imageH + Math.round(cardH * 0.105);
+  const textX = cardX + inner;
+  const textW = cardW - inner * 2;
+
+  ctx.strokeStyle = '#E2D7C1';
+  ctx.lineWidth = Math.max(1, Math.round(W * 0.0006));
+  ctx.beginPath();
+  ctx.moveTo(textX, captionY - Math.round(H * 0.04));
+  ctx.lineTo(textX + textW, captionY - Math.round(H * 0.04));
+  ctx.stroke();
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#8E341B';
+  ctx.font = `${Math.round(H * 0.032)}px "Didact Gothic", sans-serif`;
+  ctx.fillText(character.name || 'Your Chosen Mask', textX, captionY);
+
+  ctx.fillStyle = '#C09A3F';
+  ctx.font = `500 ${Math.round(H * 0.014)}px "Albert Sans", sans-serif`;
+  ctx.textAlign = 'right';
+  ctx.fillText('VAR 1  |  ORIGINAL  |  VAR 2', textX + textW, captionY);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#2C241B';
+  ctx.font = `${Math.round(H * 0.018)}px "Albert Sans", sans-serif`;
+  const description = [
+    session.revealText || `Your answers aligned with ${character.name || 'this mask'}.`,
+    character.title ? `Chosen mask: ${character.title}.` : '',
+  ].filter(Boolean).join(' ');
+  wrapText(ctx, description, textX, captionY + Math.round(H * 0.043), textW, Math.round(H * 0.03), 3);
+
+  ctx.fillStyle = '#8A7B6E';
+  ctx.font = `500 ${Math.round(H * 0.013)}px "Albert Sans", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('KNOW YOUR DANCE - TAKE HOME PRINT', cardX + cardW / 2, cardY + cardH - Math.round(H * 0.035));
+
+  drawPreview(canvas, previewCanvas);
+}
+
+function drawSubtleBackground(ctx, W, H) {
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#F8F5F0');
+  bg.addColorStop(0.55, '#fffaf0');
+  bg.addColorStop(1, '#EDE1CA');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = 'rgba(192, 154, 63, 0.08)';
+  for (let i = 0; i < 32; i++) {
+    const x = (i * 521) % W;
+    const y = (i * 283) % H;
+    const r = 5 + (i % 4) * 2;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawPolaroidPortrait(ctx, img, box, label, isOriginal) {
+  const border = Math.round(box.w * 0.045);
+  const bottom = Math.round(box.h * 0.12);
+  const imageBox = {
+    x: box.x + border,
+    y: box.y + border,
+    w: box.w - border * 2,
+    h: box.h - border * 2 - bottom,
+  };
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(44, 36, 27, 0.14)';
+  ctx.shadowBlur = Math.round(box.w * 0.035);
+  ctx.shadowOffsetY = Math.round(box.h * 0.018);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(box.x, box.y, box.w, box.h);
+  ctx.restore();
+
+  ctx.strokeStyle = isOriginal ? '#C09A3F' : '#E2D7C1';
+  ctx.lineWidth = isOriginal ? Math.max(3, Math.round(box.w * 0.006)) : Math.max(1, Math.round(box.w * 0.003));
+  ctx.strokeRect(box.x, box.y, box.w, box.h);
+
+  drawCover(ctx, img, imageBox.x, imageBox.y, imageBox.w, imageBox.h);
+
+  ctx.fillStyle = isOriginal ? '#8E341B' : '#8A7B6E';
+  ctx.textAlign = 'center';
+  ctx.font = `500 ${Math.round(box.h * 0.032)}px "Albert Sans", sans-serif`;
+  ctx.fillText(label.toUpperCase(), box.x + box.w / 2, box.y + box.h - Math.round(bottom * 0.38));
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
+  const words = String(text).split(/\s+/);
+  let line = '';
+  let lines = 0;
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line ? `${line} ${words[i]}` : words[i];
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      lines++;
+      if (lines >= maxLines) {
+        ctx.fillText(`${line.replace(/[,.]$/, '')}...`, x, y);
+        return;
+      }
+      ctx.fillText(line, x, y);
+      line = words[i];
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  if (line && lines < maxLines) ctx.fillText(line, x, y);
+}
+
+function drawPreview(canvas, previewCanvas) {
+  const previewCtx = previewCanvas.getContext('2d');
+  const previewW = 520;
+  const previewH = Math.round((canvas.height / canvas.width) * previewW);
+  previewCanvas.width = previewW;
+  previewCanvas.height = previewH;
+  previewCtx.drawImage(canvas, 0, 0, previewW, previewH);
 }
 
 function drawCover(ctx, img, x, y, w, h) {

@@ -41,15 +41,19 @@ export class CompositingProvider {
     const placement = coverPlacement(photo);
     const subject = await detectSubject(photo, placement);
 
-    const maskUrl = await resolveAsset(promptSet.mask.asset);
+    const maskAssetPaths = maskVariantAssets(promptSet.mask);
+    const maskUrls = await Promise.all(maskAssetPaths.map((asset) => resolveAsset(asset)));
     const costumeUrl = promptSet.costume?.asset ? await resolveAsset(promptSet.costume.asset) : null;
-    const [maskImg, costumeImg] = await Promise.all([
-      loadImage(maskUrl).catch(() => null),
+    const [maskImgs, costumeImg] = await Promise.all([
+      Promise.all(maskUrls.map((url) => loadImage(url).catch(() => null))),
       costumeUrl ? loadImage(costumeUrl).catch(() => null) : Promise.resolve(null),
     ]);
+    const maskImg1 = maskImgs[0];
+    const maskImg2 = maskImgs[1] || maskImgs[0];
 
     const original = drawBase(photo, placement);
-    const mask = drawBase(photo, placement);
+    const maskVar1 = drawBase(photo, placement);
+    const maskVar2 = drawBase(photo, placement);
     const costume = drawBase(photo, placement);
     const combined = drawBase(photo, placement);
 
@@ -59,15 +63,20 @@ export class CompositingProvider {
       placeOverlay(costume, costumeImg, pickAnchor(anchors, promptSet.costume, 'torso'), promptSet.costume);
       placeOverlay(combined, costumeImg, pickAnchor(anchors, promptSet.costume, 'torso'), promptSet.costume);
     }
-    if (maskImg) {
-      placeOverlay(mask, maskImg, pickAnchor(anchors, promptSet.mask, 'face'), promptSet.mask);
-      placeOverlay(combined, maskImg, pickAnchor(anchors, promptSet.mask, 'face'), promptSet.mask);
+    if (maskImg1) {
+      placeOverlay(maskVar1, maskImg1, pickAnchor(anchors, promptSet.mask, 'face'), promptSet.mask);
+      placeOverlay(combined, maskImg1, pickAnchor(anchors, promptSet.mask, 'face'), promptSet.mask);
+    }
+    if (maskImg2) {
+      placeOverlay(maskVar2, maskImg2, pickAnchor(anchors, promptSet.mask, 'face'), promptSet.mask);
     }
 
     const outputs = {
       original: original.toDataURL('image/png'),
-      mask: mask.toDataURL('image/png'),
+      maskVar1: maskVar1.toDataURL('image/png'),
+      maskVar2: maskVar2.toDataURL('image/png'),
     };
+    outputs.mask = outputs.maskVar1;
     if (costumeImg) {
       outputs.costume = costume.toDataURL('image/png');
       outputs.combined = combined.toDataURL('image/png');
@@ -76,6 +85,17 @@ export class CompositingProvider {
     }
     return outputs;
   }
+}
+
+function maskVariantAssets(maskLayer) {
+  if (Array.isArray(maskLayer.variantAssets) && maskLayer.variantAssets.length) {
+    return maskLayer.variantAssets.slice(0, 2);
+  }
+  const first = maskLayer.asset;
+  const second = first && first.includes('-01.')
+    ? first.replace('-01.', '-02.')
+    : first;
+  return [first, second].filter(Boolean);
 }
 
 async function detectSubject(photo, placement) {
