@@ -1,0 +1,27 @@
+Story Machine — Commercial License
+Copyright (c) 2026. All rights reserved.
+
+This software and its accompanying themes, assets, and documentation (the "Software")
+are provided under a commercial license. This file is a placeholder to be replaced with
+the final license agreed between the vendor and the licensee.
+
+Pending that agreement, the following interim terms apply:
+
+1. Grant. The copyright holder grants the licensee a non-exclusive, non-transferable
+   right to install and run the Software for evaluation and internal deployment.
+
+2. Restrictions. The licensee may not redistribute, sublicense, or resell the Software
+   or its themes and assets, except as separately agreed in writing.
+
+3. Themes & Assets. Individual theme packages and artwork may be licensed separately
+   from the engine and may carry their own terms.
+
+4. No Warranty. The Software is provided "as is", without warranty of any kind, express
+   or implied, including but not limited to merchantability, fitness for a particular
+   purpose, and non-infringement. In no event shall the copyright holder be liable for
+   any claim, damages, or other liability arising from the use of the Software.
+
+5. Replacement. This placeholder should be superseded by the definitive commercial
+   license or EULA prior to production distribution.
+
+For licensing inquiries, contact the copyright holder.

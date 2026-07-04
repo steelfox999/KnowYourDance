@@ -1,0 +1,30 @@
+{
+  "name": "story-machine",
+  "productName": "Story Machine",
+  "version": "1.0.0",
+  "description": "Offline-first, config-driven interactive storytelling & photo-transformation kiosk platform.",
+  "author": "Story Machine Platform",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "web": "node scripts/serve.js",
+    "check": "node scripts/validate-config.js themes/know-your-dance",
+    "assets": "node scripts/generate-assets.js themes/know-your-dance",
+    "pack:win": "electron-builder --win --publish never",
+    "pack:mac": "electron-builder --mac --publish never"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.storymachine.kiosk",
+    "productName": "Story Machine",
+    "files": ["electron/**", "src/**", "themes/**", "schemas/**", "vendor/**"],
+    "directories": { "output": "dist" },
+    "win": { "target": ["nsis"], "artifactName": "StoryMachine-Setup-${version}.exe" },
+    "mac": { "target": ["dmg"], "category": "public.app-category.entertainment" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  }
+}

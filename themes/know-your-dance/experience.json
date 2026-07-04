@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "know-your-dance",
+  "name": "Know Your Dance",
+  "description": "A photo keepsake experience that matches visitors with one of four Indian masked dance traditions.",
+  "flow": ["idle", "story", "quiz", "reveal", "camera", "transform", "results", "print", "qr"],
+  "idleTimeoutSeconds": 90,
+  "parts": {
+    "story": "story.json",
+    "quiz": "quiz.json",
+    "characters": "characters.json",
+    "prompts": "prompts.json",
+    "print": "print.json",
+    "theme": "theme.json"
+  },
+  "qr": {
+    "enabled": true,
+    "deliveryBaseUrl": "",
+    "autoResetSeconds": 20
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://storymachine.dev/schemas/v1/prompts.schema.json",
+  "title": "TransformationPrompts",
+  "type": "object",
+  "required": ["schemaVersion", "sets"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string" },
+    "provider": { "type": "string", "description": "Transform provider id, e.g. 'compositing' (v1) or a future 'generative'." },
+    "default": { "type": "string" },
+    "sets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["mask"],
+        "properties": {
+          "label": { "type": "string" },
+          "mask": { "$ref": "#/definitions/layer" },
+          "costume": { "$ref": "#/definitions/layer" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "layer": {
+      "type": "object",
+      "required": ["asset"],
+      "properties": {
+        "asset": { "type": "string" },
+        "anchor": {
+          "type": "string",
+          "enum": ["face", "head", "torso"],
+          "description": "Landmark-derived anchor used to place this layer."
+        },
+        "scale": { "type": "number" },
+        "offsetX": { "type": "number" },
+        "offsetY": { "type": "number" },
+        "rotation": {
+          "type": "number",
+          "description": "Extra rotation in degrees after matching the subject's face angle."
+        },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "prompt": { "type": "string", "description": "Text prompt reserved for a future generative provider." }
+      }
+    }
+  }
+}

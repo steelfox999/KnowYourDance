@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://storymachine.dev/schemas/v1/quiz.schema.json",
+  "title": "Quiz",
+  "type": "object",
+  "required": ["schemaVersion", "questions"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string" },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "prompt", "options"],
+        "properties": {
+          "id": { "type": "string" },
+          "prompt": { "type": "string" },
+          "options": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["label", "traits"],
+              "properties": {
+                "label": { "type": "string" },
+                "icon": { "type": "string" },
+                "traits": { "type": "object", "additionalProperties": { "type": "number" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

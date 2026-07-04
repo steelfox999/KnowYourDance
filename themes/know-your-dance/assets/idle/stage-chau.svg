@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+  <rect width="1280" height="800" fill="#141414"/>
+  <path d="M0 612 C150 680 270 560 460 620 C680 690 820 548 1000 620 C1130 672 1210 638 1280 604 L1280 800 L0 800 Z" fill="#251d1a"/>
+  <circle cx="260" cy="190" r="140" fill="#e23d35" opacity="0.17"/>
+  <g transform="translate(438 110) scale(1.1)">
+    <path d="M72 112 C102 58 146 28 200 28 C254 28 298 58 328 112 L292 116 C266 82 236 66 200 66 C164 66 134 82 108 116 Z" fill="#f0b429" stroke="#141414" stroke-width="8"/>
+    <path d="M99 118 C116 88 150 70 200 70 C250 70 284 88 301 118 C322 154 318 251 276 314 C236 350 164 350 124 314 C82 251 78 154 99 118 Z" fill="#fff7e8" stroke="#141414" stroke-width="10"/>
+    <path d="M120 90 L88 35 L150 68 Z M200 68 L200 14 L232 70 Z M280 90 L312 35 L250 68 Z" fill="#e23d35" stroke="#141414" stroke-width="7"/>
+    <path d="M112 166 L182 148 L166 190 Z M288 166 L218 148 L234 190 Z" fill="#141414"/>
+    <path d="M200 182 C184 215 184 238 200 258 C216 238 216 215 200 182 Z" fill="#d88822" stroke="#141414" stroke-width="7"/>
+    <path d="M148 286 C180 306 220 306 252 286" fill="none" stroke="#e23d35" stroke-width="12" stroke-linecap="round"/>
+  </g>
+  <text x="72" y="118" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="56" font-weight="700" fill="#fff7e8">KNOW YOUR DANCE</text>
+  <text x="76" y="178" font-family="Segoe UI, sans-serif" font-size="28" fill="#f0b429">Chau</text>
+  <text x="76" y="706" font-family="Segoe UI, sans-serif" font-size="30" fill="#fff7e8">A mask for leap, strike, and story.</text>
+</svg>

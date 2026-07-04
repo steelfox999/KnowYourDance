@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+  <rect width="1280" height="800" fill="#141414"/>
+  <path d="M0 620 C180 560 320 700 520 630 C720 560 840 660 1060 600 C1160 570 1230 570 1280 590 L1280 800 L0 800 Z" fill="#22201d"/>
+  <circle cx="1010" cy="170" r="150" fill="#f0b429" opacity="0.16"/>
+  <g transform="translate(440 118) scale(1.08)">
+    <path d="M84 136 C88 82 128 50 200 50 C272 50 312 82 316 136 L334 250 C341 314 293 356 200 356 C107 356 59 314 66 250 Z" fill="#c5282f" stroke="#f0b429" stroke-width="12"/>
+    <path d="M105 90 L66 42 L126 64 Z M295 90 L334 42 L274 64 Z" fill="#f0b429" stroke="#141414" stroke-width="8"/>
+    <path d="M116 176 C142 154 166 154 188 176 C158 190 136 190 116 176 Z M212 176 C234 154 258 154 284 176 C264 190 242 190 212 176 Z" fill="#fff7e8" stroke="#141414" stroke-width="9"/>
+    <path d="M200 182 L176 248 L224 248 Z" fill="#f0b429" stroke="#141414" stroke-width="8"/>
+    <path d="M136 286 C168 318 232 318 264 286" fill="none" stroke="#fff7e8" stroke-width="16" stroke-linecap="round"/>
+  </g>
+  <text x="72" y="118" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="56" font-weight="700" fill="#fff7e8">KNOW YOUR DANCE</text>
+  <text x="76" y="178" font-family="Segoe UI, sans-serif" font-size="28" fill="#f0b429">Somana Kunitha</text>
+  <text x="76" y="706" font-family="Segoe UI, sans-serif" font-size="30" fill="#fff7e8">Answer the rhythm. Wear the mask.</text>
+</svg>

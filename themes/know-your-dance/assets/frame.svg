@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 2100">
+  <rect x="0" y="0" width="1480" height="2100" fill="none"/>
+  <rect x="36" y="36" width="1408" height="2028" fill="none" stroke="#e23d35" stroke-width="24"/>
+  <rect x="70" y="70" width="1340" height="1960" fill="none" stroke="#f0b429" stroke-width="8"/>
+  <path d="M132 176 H1348 M132 1924 H1348" stroke="#141414" stroke-width="8" opacity="0.45"/>
+  <text x="740" y="132" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="64" font-weight="700" fill="#141414">KNOW YOUR DANCE</text>
+  <text x="740" y="1992" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="38" fill="#141414">Somana Kunitha | Chau | Bardo Chham | Gomira</text>
+  <g fill="#e23d35" opacity="0.86">
+    <circle cx="130" cy="128" r="16"/>
+    <circle cx="1350" cy="128" r="16"/>
+    <circle cx="130" cy="1972" r="16"/>
+    <circle cx="1350" cy="1972" r="16"/>
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://storymachine.dev/schemas/v1/theme.schema.json",
+  "title": "Theme",
+  "type": "object",
+  "required": ["schemaVersion"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "tokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" }, "surface": { "type": "string" }, "ink": { "type": "string" },
+        "accent": { "type": "string" }, "accent2": { "type": "string" }, "muted": { "type": "string" },
+        "fontDisplay": { "type": "string" }, "fontBody": { "type": "string" }
+      }
+    },
+    "music": {
+      "type": "object",
+      "properties": {
+        "volume": { "type": "number", "minimum": 0, "maximum": 1 },
+        "steps": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "idle": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" }, "tagline": { "type": "string" },
+        "intervalMs": { "type": "number" },
+        "images": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

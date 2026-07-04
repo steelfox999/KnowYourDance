@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+  <rect width="1280" height="800" fill="#141414"/>
+  <path d="M0 610 C150 555 310 610 440 570 C620 516 760 660 920 602 C1080 544 1192 584 1280 626 L1280 800 L0 800 Z" fill="#1b2530"/>
+  <circle cx="1005" cy="185" r="155" fill="#4cc3ff" opacity="0.16"/>
+  <g transform="translate(440 116) scale(1.08)">
+    <path d="M100 126 L74 58 L138 100 Z M300 126 L326 58 L262 100 Z" fill="#f0b429" stroke="#141414" stroke-width="8"/>
+    <path d="M90 138 C104 82 148 58 200 58 C252 58 296 82 310 138 C332 226 292 344 200 344 C108 344 68 226 90 138 Z" fill="#3154a4" stroke="#141414" stroke-width="10"/>
+    <path d="M132 170 C152 146 176 150 190 176 C164 188 146 188 132 170 Z M210 176 C224 150 248 146 268 170 C254 188 236 188 210 176 Z" fill="#fff7e8" stroke="#141414" stroke-width="8"/>
+    <path d="M200 184 C176 222 178 258 200 282 C222 258 224 222 200 184 Z" fill="#f0b429" stroke="#141414" stroke-width="8"/>
+    <path d="M146 296 C178 320 222 320 254 296" fill="none" stroke="#fff7e8" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="200" cy="112" r="15" fill="#e23d35" stroke="#141414" stroke-width="5"/>
+  </g>
+  <text x="72" y="118" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="56" font-weight="700" fill="#fff7e8">KNOW YOUR DANCE</text>
+  <text x="76" y="178" font-family="Segoe UI, sans-serif" font-size="28" fill="#f0b429">Bardo Chham</text>
+  <text x="76" y="706" font-family="Segoe UI, sans-serif" font-size="30" fill="#fff7e8">A mask for balance, wisdom, and transformation.</text>
+</svg>

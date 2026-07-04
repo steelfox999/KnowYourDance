@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "know-your-dance-print",
+  "title": "Your Know Your Dance keepsake",
+  "page": { "size": "A5", "orientation": "portrait", "dpi": 300 },
+  "grid": { "cols": 1, "rows": 2 },
+  "marginPct": 0.055,
+  "gutterPct": 0.035,
+  "background": "#fff7e8",
+  "order": ["original", "mask"],
+  "labels": {
+    "original": "Original",
+    "mask": "Dance Mask"
+  },
+  "labelColor": "rgba(20,20,20,0.72)",
+  "frame": "assets/frame.svg"
+}

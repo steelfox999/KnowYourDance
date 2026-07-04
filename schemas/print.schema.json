@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://storymachine.dev/schemas/v1/print.schema.json",
+  "title": "PrintTemplate",
+  "type": "object",
+  "required": ["schemaVersion", "page", "grid", "frame"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "page": {
+      "type": "object",
+      "required": ["size"],
+      "properties": {
+        "size": { "enum": ["A5", "A6", "4x6"] },
+        "widthMm": { "type": "number" },
+        "heightMm": { "type": "number" },
+        "orientation": { "enum": ["portrait", "landscape"] },
+        "dpi": { "type": "number" }
+      }
+    },
+    "grid": {
+      "type": "object",
+      "required": ["cols", "rows"],
+      "properties": { "cols": { "type": "integer" }, "rows": { "type": "integer" } }
+    },
+    "marginPct": { "type": "number" },
+    "gutterPct": { "type": "number" },
+    "background": { "type": "string" },
+    "order": { "type": "array", "items": { "enum": ["original", "mask", "costume", "combined"] } },
+    "labels": { "type": "object", "additionalProperties": { "type": "string" } },
+    "labelColor": { "type": "string" },
+    "frame": { "type": "string", "description": "Transparent overlay PNG/SVG covering the full sheet (venue branding)." }
+  }
+}

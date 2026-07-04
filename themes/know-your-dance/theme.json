@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "know-your-dance-theme",
+  "name": "Know Your Dance",
+  "tokens": {
+    "bg": "#141414",
+    "surface": "#22201d",
+    "ink": "#fff7e8",
+    "accent": "#e23d35",
+    "accent2": "#f0b429",
+    "muted": "#a69b8d",
+    "fontDisplay": "\"Trebuchet MS\", \"Segoe UI\", system-ui, sans-serif",
+    "fontBody": "\"Segoe UI\", system-ui, sans-serif"
+  },
+  "music": {
+    "volume": 0.4,
+    "steps": {}
+  },
+  "idle": {
+    "title": "KNOW YOUR DANCE",
+    "tagline": "Answer the rhythm. Wear the mask.",
+    "intervalMs": 4500,
+    "images": [
+      "assets/idle/stage-somana.svg",
+      "assets/idle/stage-chau.svg",
+      "assets/idle/stage-bardo.svg",
+      "assets/idle/stage-gomira.svg"
+    ]
+  }
+}

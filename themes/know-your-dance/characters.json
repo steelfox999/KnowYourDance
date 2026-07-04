@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "id": "know-your-dance-characters",
+  "characters": [
+    {
+      "id": "somana-kunitha",
+      "name": "Somana Kunitha",
+      "title": "Guardian Mask of Karnataka",
+      "portrait": "assets/masks/somana-kunitha.svg",
+      "promptSet": "somana-kunitha",
+      "weights": { "guardian": 3, "ritual": 3, "bold": 1, "devotion": 1 },
+      "reveal": {
+        "template": "The {name} mask chose you because {reason}. Your portrait carries the presence of a watchful guardian.",
+        "reasons": {
+          "guardian": "you moved toward protection before performance",
+          "ritual": "you treat rhythm as something with weight, memory, and purpose",
+          "bold": "you are ready to meet the gaze of a larger-than-life mask",
+          "devotion": "your choices kept returning to care, offering, and responsibility"
+        },
+        "defaultReason": "you carry the steady presence of a village guardian"
+      }
+    },
+    {
+      "id": "chau",
+      "name": "Chau",
+      "title": "Martial Mask of Eastern India",
+      "portrait": "assets/masks/chau.svg",
+      "promptSet": "chau",
+      "weights": { "martial": 3, "heroic": 3, "bold": 2 },
+      "reveal": {
+        "template": "The {name} mask chose you because {reason}. Your portrait is built for leap, strike, and story.",
+        "reasons": {
+          "martial": "you answered with action, force, and precision",
+          "heroic": "you are drawn to mythic characters who move with scale",
+          "bold": "you chose the dramatic entrance over the quiet corner"
+        },
+        "defaultReason": "your energy belongs to a mask that turns movement into legend"
+      }
+    },
+    {
+      "id": "bardo-chham",
+      "name": "Bardo Chham",
+      "title": "Himalayan Mask of Balance",
+      "portrait": "assets/masks/bardo-chham.svg",
+      "promptSet": "bardo-chham",
+      "weights": { "wisdom": 3, "harmony": 3, "community": 1 },
+      "reveal": {
+        "template": "The {name} mask chose you because {reason}. Your portrait stands between worlds with calm strength.",
+        "reasons": {
+          "wisdom": "you looked for meaning beneath the movement",
+          "harmony": "you chose balance even when the rhythm grew intense",
+          "community": "you noticed how performance holds people together"
+        },
+        "defaultReason": "you carry a calm sense of good overcoming disturbance"
+      }
+    },
+    {
+      "id": "gomira",
+      "name": "Gomira",
+      "title": "Fierce Mask of Bengal",
+      "portrait": "assets/masks/gomira.svg",
+      "promptSet": "gomira",
+      "weights": { "fierce": 3, "devotion": 3, "community": 2 },
+      "reveal": {
+        "template": "The {name} mask chose you because {reason}. Your portrait carries a fierce energy made to be remembered.",
+        "reasons": {
+          "fierce": "you were not afraid of intensity",
+          "devotion": "you chose the mask as a living offering, not just decoration",
+          "community": "you felt the crowd, the village, and the ritual around the dancer"
+        },
+        "defaultReason": "your energy belongs to a mask that arrives with power"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "know-your-dance-quiz",
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "When the drums begin, what pulls you forward first?",
+      "options": [
+        { "label": "Protecting the circle", "icon": "🛡️", "traits": { "guardian": 2, "ritual": 1 } },
+        { "label": "Leaping into action", "icon": "⚔️", "traits": { "martial": 2, "heroic": 1 } },
+        { "label": "Finding balance in the story", "icon": "🌀", "traits": { "wisdom": 2, "harmony": 1 } },
+        { "label": "Facing the fierce moment", "icon": "🔥", "traits": { "fierce": 2, "devotion": 1 } }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Which movement feels most like you?",
+      "options": [
+        { "label": "A grounded step with sacred weight", "icon": "🌾", "traits": { "ritual": 2, "guardian": 1 } },
+        { "label": "A sharp turn, kick, and strike", "icon": "💫", "traits": { "martial": 2, "bold": 1 } },
+        { "label": "A flowing path between worlds", "icon": "☁️", "traits": { "harmony": 2, "wisdom": 1 } },
+        { "label": "A powerful stamp that wakes the crowd", "icon": "🥁", "traits": { "fierce": 2, "community": 1 } }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "What kind of story should a mask tell?",
+      "options": [
+        { "label": "A village guardian watching over everyone", "icon": "👁️", "traits": { "guardian": 2, "devotion": 1 } },
+        { "label": "A mythic hero in full motion", "icon": "🏹", "traits": { "heroic": 2, "martial": 1 } },
+        { "label": "Good overcoming the forces that disturb life", "icon": "✨", "traits": { "wisdom": 2, "harmony": 1 } },
+        { "label": "A deity or spirit arriving with intensity", "icon": "🔱", "traits": { "devotion": 2, "fierce": 1 } }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "How should your keepsake feel?",
+      "options": [
+        { "label": "Majestic and watchful", "icon": "🔴", "traits": { "guardian": 2, "bold": 1 } },
+        { "label": "Dramatic and athletic", "icon": "🟡", "traits": { "martial": 2, "heroic": 1 } },
+        { "label": "Colorful and thoughtful", "icon": "🔵", "traits": { "wisdom": 2, "harmony": 1 } },
+        { "label": "Fierce and unforgettable", "icon": "⚫", "traits": { "fierce": 2, "community": 1 } }
+      ]
+    }
+  ]
+}

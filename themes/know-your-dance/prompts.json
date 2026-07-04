@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "know-your-dance-prompts",
+  "provider": "compositing",
+  "default": "somana-kunitha",
+  "sets": {
+    "somana-kunitha": {
+      "label": "Somana Kunitha guardian mask",
+      "mask": {
+        "asset": "assets/masks/somana-kunitha.svg",
+        "anchor": "head",
+        "scale": 1.18,
+        "offsetY": -0.02,
+        "opacity": 0.98,
+        "prompt": "large red guardian mask inspired by Somana Kunitha"
+      }
+    },
+    "chau": {
+      "label": "Chau heroic mask",
+      "mask": {
+        "asset": "assets/masks/chau.svg",
+        "anchor": "head",
+        "scale": 1.22,
+        "offsetY": -0.08,
+        "opacity": 0.98,
+        "prompt": "dramatic heroic mask inspired by Chau dance"
+      }
+    },
+    "bardo-chham": {
+      "label": "Bardo Chham animal mask",
+      "mask": {
+        "asset": "assets/masks/bardo-chham.svg",
+        "anchor": "head",
+        "scale": 1.16,
+        "offsetY": -0.03,
+        "opacity": 0.98,
+        "prompt": "colorful animal mask inspired by Bardo Chham"
+      }
+    },
+    "gomira": {
+      "label": "Gomira fierce mask",
+      "mask": {
+        "asset": "assets/masks/gomira.svg",
+        "anchor": "head",
+        "scale": 1.2,
+        "offsetY": -0.02,
+        "opacity": 0.98,
+        "prompt": "fierce wooden mask inspired by Gomira"
+      }
+    }
+  }
+}

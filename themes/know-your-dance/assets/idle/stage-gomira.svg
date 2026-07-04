@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+  <rect width="1280" height="800" fill="#141414"/>
+  <path d="M0 630 C160 572 330 654 502 598 C702 532 824 680 1030 610 C1150 570 1220 590 1280 624 L1280 800 L0 800 Z" fill="#281916"/>
+  <circle cx="1010" cy="174" r="150" fill="#e23d35" opacity="0.17"/>
+  <g transform="translate(438 106) scale(1.1)">
+    <path d="M96 124 L70 48 L136 92 Z M304 124 L330 48 L264 92 Z" fill="#141414" stroke="#f0b429" stroke-width="7"/>
+    <path d="M84 134 C91 78 134 48 200 48 C266 48 309 78 316 134 L338 242 C351 318 298 368 200 368 C102 368 49 318 62 242 Z" fill="#6e2d1d" stroke="#f0b429" stroke-width="10"/>
+    <path d="M111 158 C140 132 168 134 188 166 C158 182 132 182 111 158 Z M212 166 C232 134 260 132 289 158 C268 182 242 182 212 166 Z" fill="#f0b429" stroke="#141414" stroke-width="9"/>
+    <path d="M200 178 L170 258 L230 258 Z" fill="#e23d35" stroke="#141414" stroke-width="8"/>
+    <path d="M132 294 C164 266 236 266 268 294 C244 326 156 326 132 294 Z" fill="#141414" stroke="#f0b429" stroke-width="8"/>
+    <path d="M104 220 C66 214 55 184 70 158 M296 220 C334 214 345 184 330 158" fill="none" stroke="#e23d35" stroke-width="13" stroke-linecap="round"/>
+  </g>
+  <text x="72" y="118" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="56" font-weight="700" fill="#fff7e8">KNOW YOUR DANCE</text>
+  <text x="76" y="178" font-family="Segoe UI, sans-serif" font-size="28" fill="#f0b429">Gomira</text>
+  <text x="76" y="706" font-family="Segoe UI, sans-serif" font-size="30" fill="#fff7e8">A mask for fierce devotion and memory.</text>
+</svg>

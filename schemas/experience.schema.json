@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://storymachine.dev/schemas/v1/experience.schema.json",
+  "title": "Experience",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "parts"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "flow": {
+      "type": "array",
+      "items": { "enum": ["idle", "story", "quiz", "reveal", "camera", "transform", "results", "print", "qr"] }
+    },
+    "idleTimeoutSeconds": { "type": "number", "minimum": 10 },
+    "parts": {
+      "type": "object",
+      "required": ["story", "quiz", "characters", "prompts", "print", "theme"],
+      "properties": {
+        "story": { "type": "string" },
+        "quiz": { "type": "string" },
+        "characters": { "type": "string" },
+        "prompts": { "type": "string" },
+        "print": { "type": "string" },
+        "theme": { "type": "string" }
+      }
+    },
+    "qr": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "deliveryBaseUrl": { "type": "string" },
+        "autoResetSeconds": { "type": "number" }
+      }
+    }
+  }
+}
