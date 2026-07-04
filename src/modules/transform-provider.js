@@ -5,6 +5,7 @@ import { detectFaceLandmarks } from './face-landmarks.js';
  *
  * The flow depends only on the TransformProvider contract:
  *     transform(photoDataUrl, promptSet, resolveAsset) -> keyed PNG data URLs
+ *     plus _alignment metadata for face-aware print crops
  *
  * CompositingProvider runs fully offline. It uses vendored MediaPipe face
  * landmarks when available, then falls back to browser FaceDetector or a
@@ -75,6 +76,7 @@ export class CompositingProvider {
       original: original.toDataURL('image/png'),
       maskVar1: maskVar1.toDataURL('image/png'),
       maskVar2: maskVar2.toDataURL('image/png'),
+      _alignment: buildAlignmentMeta(subject, anchors),
     };
     outputs.mask = outputs.maskVar1;
     if (costumeImg) {
@@ -85,6 +87,32 @@ export class CompositingProvider {
     }
     return outputs;
   }
+}
+
+function buildAlignmentMeta(subject, anchors) {
+  const face = anchors.face;
+  const head = anchors.head;
+  return {
+    source: subject?.source || 'fallback',
+    target: { width: TARGET, height: TARGET },
+    face: cleanAnchor(face),
+    head: cleanAnchor(head),
+  };
+}
+
+function cleanAnchor(anchor) {
+  return {
+    cx: round(anchor.cx),
+    cy: round(anchor.cy),
+    w: round(anchor.w),
+    h: round(anchor.h),
+    angle: round(anchor.angle || 0, 4),
+  };
+}
+
+function round(value, digits = 2) {
+  const factor = 10 ** digits;
+  return Math.round(value * factor) / factor;
 }
 
 function maskVariantAssets(maskLayer) {

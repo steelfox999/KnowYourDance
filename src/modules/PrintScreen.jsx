@@ -175,6 +175,7 @@ async function composeWidePolaroidSheet(cfg, session, print, canvas, previewCanv
   const images = await Promise.all(order.map((key) => loadImage(session.outputs[key])));
   const labels = print.labels || {};
   const character = session.character || {};
+  const alignment = session.outputs?._alignment;
 
   drawSubtleBackground(ctx, W, H);
 
@@ -215,7 +216,7 @@ async function composeWidePolaroidSheet(cfg, session, print, canvas, previewCanv
       w: paneW,
       h: photoH,
     };
-    drawTriptychPane(ctx, img, pane, labels[order[index]] || order[index], order[index] === 'original');
+    drawTriptychPane(ctx, img, pane, labels[order[index]] || order[index], order[index] === 'original', alignment);
   });
 
   for (let i = 1; i < paneCount; i++) {
@@ -288,8 +289,8 @@ function drawSubtleBackground(ctx, W, H) {
   }
 }
 
-function drawTriptychPane(ctx, img, pane, label, isOriginal) {
-  drawCover(ctx, img, pane.x, pane.y, pane.w, pane.h);
+function drawTriptychPane(ctx, img, pane, label, isOriginal, alignment) {
+  drawFaceAlignedCover(ctx, img, pane.x, pane.y, pane.w, pane.h, alignment);
 
   const labelH = Math.round(pane.h * 0.085);
   const gradient = ctx.createLinearGradient(0, pane.y + pane.h - labelH * 1.8, 0, pane.y + pane.h);
@@ -308,6 +309,53 @@ function drawTriptychPane(ctx, img, pane, label, isOriginal) {
   ctx.textAlign = 'center';
   ctx.font = `600 ${Math.round(pane.h * 0.032)}px "Albert Sans", sans-serif`;
   ctx.fillText(label.toUpperCase(), pane.x + pane.w / 2, pane.y + pane.h - Math.round(labelH * 0.42));
+}
+
+function drawFaceAlignedCover(ctx, img, x, y, w, h, alignment) {
+  const crop = faceCrop(img, w / h, alignment);
+  if (!crop) {
+    drawCover(ctx, img, x, y, w, h);
+    return;
+  }
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  ctx.drawImage(img, crop.x, crop.y, crop.w, crop.h, x, y, w, h);
+  ctx.restore();
+}
+
+function faceCrop(img, targetAspect, alignment) {
+  const face = alignment?.face;
+  const target = alignment?.target;
+  if (!face || !target?.width || !target?.height) return null;
+
+  const scaleX = img.width / target.width;
+  const scaleY = img.height / target.height;
+  const cx = face.cx * scaleX;
+  const cy = face.cy * scaleY;
+  const faceW = face.w * scaleX;
+  const faceH = face.h * scaleY;
+  if (![cx, cy, faceW, faceH].every(Number.isFinite) || faceW <= 0 || faceH <= 0) return null;
+
+  let cropH = Math.max(faceH * 2.22, (faceW * 1.82) / targetAspect);
+  cropH = clamp(cropH, img.height * 0.62, img.height);
+  let cropW = cropH * targetAspect;
+
+  if (cropW > img.width) {
+    cropW = img.width;
+    cropH = cropW / targetAspect;
+  }
+
+  const faceYInPane = 0.43;
+  const x = clamp(cx - cropW * 0.5, 0, img.width - cropW);
+  const y = clamp(cy - cropH * faceYInPane, 0, img.height - cropH);
+  return { x, y, w: cropW, h: cropH };
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
