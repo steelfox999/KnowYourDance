@@ -16,8 +16,8 @@ export default function QrScreen({ config, onReset }) {
   useEffect(() => {
     gsap.fromTo(
       containerRef.current,
-      { opacity: 0, y: 18 },
-      { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }
     );
 
     if (enabled && online) {

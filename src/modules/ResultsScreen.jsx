@@ -15,11 +15,11 @@ export default function ResultsScreen({ config, session, onNext, onReset }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const timeline = gsap.timeline({ defaults: { ease: 'expo.out' } });
       timeline
-        .fromTo('.results-header', { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.7 })
-        .fromTo('.result-tile', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.08 }, '-=0.2')
-        .fromTo('.results-actions', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.2');
+        .fromTo('.results-header', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, clearProps: 'all' })
+        .fromTo('.result-tile', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, clearProps: 'all' }, '-=0.35')
+        .fromTo('.results-actions', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.25');
     }, containerRef);
 
     return () => ctx.revert();

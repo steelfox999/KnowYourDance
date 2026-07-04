@@ -811,6 +811,14 @@ label[aria-disabled="true"] {
   color: var(--color-gold);
 }
 
+.camera-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: #fff;
+  animation: flashFade 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 .countdown-overlay {
   position: absolute;
   inset: 0;
@@ -1061,6 +1069,7 @@ label[aria-disabled="true"] {
   padding: 28px;
   background: rgba(44, 36, 27, 0.78);
   backdrop-filter: blur(8px);
+  animation: modalFade 0.24s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .image-modal-content {
@@ -1073,6 +1082,7 @@ label[aria-disabled="true"] {
   background: var(--color-bg);
   border: 1px solid var(--color-gold);
   color: var(--color-text);
+  animation: modalRise 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .image-modal-content > span {
@@ -1142,6 +1152,21 @@ label[aria-disabled="true"] {
 
 .spin-icon {
   animation: spinSlower 1s linear infinite;
+}
+
+@keyframes flashFade {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modalFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalRise {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .qr-code-box {

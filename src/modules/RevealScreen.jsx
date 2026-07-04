@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
+import confetti from 'canvas-confetti';
 import GlassCard from '../components/GlassCard';
 import { runReveal } from './selection.js';
 import { getDanceProfile } from './dance-profiles.js';
@@ -19,12 +20,19 @@ export default function RevealScreen({ config, session, onNext }) {
   session.traitScores = traitScores;
 
   useEffect(() => {
+    confetti({
+      particleCount: 120,
+      spread: 90,
+      origin: { y: 0.6 },
+      colors: ['#D35400', '#C09A3F', '#DFBA6B', '#8E341B', '#F8F5F0'],
+    });
+
     const ctx = gsap.context(() => {
-      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const timeline = gsap.timeline({ defaults: { ease: 'expo.out' } });
       timeline
-        .fromTo('.reveal-header', { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.7 })
-        .fromTo('.reveal-panel-anim', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, '-=0.3')
-        .fromTo('.reveal-action', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.2');
+        .fromTo('.reveal-header', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, clearProps: 'all' })
+        .fromTo('.reveal-panel-anim', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, clearProps: 'all' }, '-=0.35')
+        .fromTo('.reveal-action', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.25');
     }, containerRef);
 
     return () => ctx.revert();

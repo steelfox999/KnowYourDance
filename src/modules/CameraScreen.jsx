@@ -8,6 +8,7 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
   const [statusText, setStatusText] = useState('Pose in the frame below.');
   const [countdownNum, setCountdownNum] = useState(null);
   const [cameraError, setCameraError] = useState(false);
+  const [flashVisible, setFlashVisible] = useState(false);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -38,8 +39,8 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
 
     gsap.fromTo(
       containerRef.current,
-      { opacity: 0, y: 18 },
-      { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }
     );
 
     return () => {
@@ -105,6 +106,8 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
     ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, width, height);
 
+    setFlashVisible(true);
+    window.setTimeout(() => setFlashVisible(false), 300);
     handleCapture(canvas.toDataURL('image/jpeg', 0.92));
   };
 
@@ -178,6 +181,8 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
               <p>Hold Your Pose...</p>
             </div>
           )}
+
+          {flashVisible && <div className="camera-flash" />}
         </div>
 
         <canvas ref={canvasRef} className="hidden" />

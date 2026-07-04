@@ -11,7 +11,7 @@ export default function IdleScreen({ config, onNext }) {
       gsap.fromTo(
         '.idle-anim',
         { opacity: 0, y: 28 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: 0.12 }
+        { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', stagger: 0.12 }
       );
     }, containerRef);
 

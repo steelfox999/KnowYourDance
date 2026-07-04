@@ -11,8 +11,8 @@ export default function StoryScreen({ config, onNext }) {
   useEffect(() => {
     gsap.fromTo(
       containerRef.current,
-      { opacity: 0, y: 18 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }
     );
   }, []);
 
@@ -20,8 +20,8 @@ export default function StoryScreen({ config, onNext }) {
     gsap.to(textRef.current, {
       opacity: 0,
       y: -10,
-      duration: 0.25,
-      ease: 'power2.in',
+      duration: 0.3,
+      ease: 'expo.inOut',
       onComplete: () => {
         const nextIndex = currentBeatIndex + 1;
         if (nextIndex >= beats.length) {
@@ -30,11 +30,11 @@ export default function StoryScreen({ config, onNext }) {
         }
 
         setCurrentBeatIndex(nextIndex);
-        gsap.fromTo(
-          textRef.current,
-          { opacity: 0, y: 10 },
-          { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }
-        );
+          gsap.fromTo(
+            textRef.current,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', clearProps: 'all' }
+          );
       },
     });
   };
