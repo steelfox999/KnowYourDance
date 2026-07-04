@@ -11,9 +11,24 @@ const path = require('path');
 const { createServer } = require('../electron/server');
 
 const ROOT = path.join(__dirname, '..');
-const PORT = process.env.PORT || 4173;
+const PORT = parseInt(process.env.PORT || '4173', 10);
 
-createServer(ROOT).listen(PORT, () => {
-  console.log(`\nStory Machine (web mode) -> http://localhost:${PORT}\n`);
-  console.log('Camera uses your webcam if permitted, else a file picker. Ctrl+C to stop.\n');
+const server = createServer(ROOT);
+
+function start(port) {
+  server.listen(port, () => {
+    console.log(`\nStory Machine (web mode) -> http://localhost:${port}\n`);
+    console.log('Camera uses your webcam if permitted, else a file picker. Ctrl+C to stop.\n');
+  });
+}
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Port ${err.port} is busy, trying port ${err.port + 1}...`);
+    start(err.port + 1);
+  } else {
+    console.error('Server error:', err);
+  }
 });
+
+start(PORT);

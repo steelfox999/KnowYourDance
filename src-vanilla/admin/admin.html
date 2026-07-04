@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Story Machine — Admin</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Story&nbsp;Machine <span>Admin</span></div>
+    <div class="topbar-controls">
+      <label>Theme
+        <select id="themeSelect"></select>
+      </label>
+      <button id="validateBtn" class="btn">Validate</button>
+      <button id="launchBtn" class="btn btn-primary">Launch experience</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidenav" id="sidenav"></nav>
+    <main class="panel" id="panel"></main>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

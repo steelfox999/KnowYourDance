@@ -10,20 +10,20 @@ export const ENV = hasNative ? window.platform.env : 'web';
 
 export async function listThemes() {
   if (hasNative) return window.platform.listThemes();
-  const res = await fetch('themes/themes.json');
+  const res = await fetch('/themes/themes.json');
   return res.ok ? res.json() : ['know-your-dance'];
 }
 
 // Reads always go over http (same-origin), so JSON parses identically everywhere.
 export async function readJson(themeId, relPath) {
-  const res = await fetch(`themes/${themeId}/${relPath}`);
+  const res = await fetch(`/themes/${themeId}/${relPath}`);
   if (!res.ok) throw new Error(`Cannot load ${relPath} (${res.status})`);
   return res.json();
 }
 
 // Assets resolve to same-origin relative URLs — no file:// canvas tainting.
 export async function assetUrl(themeId, relPath) {
-  return `themes/${themeId}/${relPath}`;
+  return `/themes/${themeId}/${relPath}`;
 }
 
 export async function writeJson(themeId, relPath, data) {

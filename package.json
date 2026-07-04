@@ -7,24 +7,58 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "main": "electron/main.js",
   "scripts": {
-    "start": "electron .",
-    "web": "node scripts/serve.js",
+    "build": "vite build",
+    "start": "npm run build && electron .",
+    "web": "npm run build && node scripts/serve.js",
     "check": "node scripts/validate-config.js themes/know-your-dance",
     "assets": "node scripts/generate-assets.js themes/know-your-dance",
-    "pack:win": "electron-builder --win --publish never",
-    "pack:mac": "electron-builder --mac --publish never"
+    "pack:win": "npm run build && electron-builder --win --publish never",
+    "pack:mac": "npm run build && electron-builder --mac --publish never"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.5.2",
     "electron": "^31.0.0",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "postcss": "^8.5.16",
+    "tailwindcss": "^4.3.2",
+    "vite": "^8.1.3"
   },
   "build": {
     "appId": "com.storymachine.kiosk",
     "productName": "Story Machine",
-    "files": ["electron/**", "src/**", "themes/**", "schemas/**", "vendor/**"],
-    "directories": { "output": "dist" },
-    "win": { "target": ["nsis"], "artifactName": "StoryMachine-Setup-${version}.exe" },
-    "mac": { "target": ["dmg"], "category": "public.app-category.entertainment" },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+    "files": [
+      "electron/**",
+      "dist/**",
+      "themes/**",
+      "schemas/**",
+      "vendor/**"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "StoryMachine-Setup-${version}.exe"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.entertainment"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "lucide-react": "^1.23.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   }
 }

@@ -22,7 +22,7 @@ function createServer(root) {
     if (urlPath === '/') urlPath = '/index.html';
     let filePath = (urlPath.startsWith('/themes/') || urlPath.startsWith('/vendor/'))
       ? path.join(root, urlPath)
-      : path.join(root, 'src', urlPath);
+      : path.join(root, 'dist', urlPath);
     filePath = path.normalize(filePath);
     if (!filePath.startsWith(root)) { res.writeHead(403); return res.end('Forbidden'); }
     fs.readFile(filePath, (err, data) => {

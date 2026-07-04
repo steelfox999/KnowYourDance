@@ -3,14 +3,21 @@
   "id": "know-your-dance-theme",
   "name": "Know Your Dance",
   "tokens": {
-    "bg": "#141414",
-    "surface": "#22201d",
-    "ink": "#fff7e8",
-    "accent": "#e23d35",
-    "accent2": "#f0b429",
-    "muted": "#a69b8d",
-    "fontDisplay": "\"Trebuchet MS\", \"Segoe UI\", system-ui, sans-serif",
-    "fontBody": "\"Segoe UI\", system-ui, sans-serif"
+    "bg": "#F8F5F0",
+    "surface": "rgba(248, 245, 240, 0.8)",
+    "ink": "#2C241B",
+    "text": "#2C241B",
+    "textMuted": "#8A7B6E",
+    "border": "#E2D7C1",
+    "accent": "#D35400",
+    "accent2": "#C09A3F",
+    "saffron": "#D35400",
+    "terracotta": "#8E341B",
+    "gold": "#C09A3F",
+    "goldLight": "#DFBA6B",
+    "muted": "#8A7B6E",
+    "fontDisplay": "\"Didact Gothic\", sans-serif",
+    "fontBody": "\"Albert Sans\", sans-serif"
   },
   "music": {
     "volume": 0.4,
@@ -18,7 +25,7 @@
   },
   "idle": {
     "title": "KNOW YOUR DANCE",
-    "tagline": "Answer the rhythm. Wear the mask.",
+    "tagline": "Discover the ancient sacred rhythms of India.",
     "intervalMs": 4500,
     "images": [
       "assets/idle/stage-somana.svg",
