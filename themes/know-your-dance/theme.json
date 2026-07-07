@@ -21,6 +21,7 @@
   },
   "music": {
     "volume": 0.4,
+    "track": "/assets/Verclub_Indian_Loop.wav",
     "steps": {}
   },
   "idle": {

@@ -6,28 +6,40 @@
 export class MusicEngine {
   constructor(config) {
     this.config = config;
-    this.map = (config.theme.music && config.theme.music.steps) || {};
-    this.volume = config.theme.music?.volume ?? 0.5;
+    const music = config.theme.music || {};
+    this.map = music.steps || {};
+    this.defaultTrack = music.track || null;
+    this.volume = music.volume ?? 0.5;
     this.current = null;
     this.currentKey = null;
   }
 
   async onStep(step) {
-    const rel = this.map[step];
-    if (rel === this.currentKey) return; // same track keeps playing
-    this.currentKey = rel;
-    this._fadeOut(this.current);
-    this.current = null;
+    const rel = this.map[step] || this.defaultTrack;
+    if (rel === this.currentKey && this.current && !this.current.paused) return; // same track keeps playing
+
+    if (rel !== this.currentKey) {
+      this._fadeOut(this.current);
+      this.current = null;
+      this.currentKey = null;
+    }
+
     if (!rel) return;
     try {
-      const url = await this.config.asset(rel);
+      const url = this._resolveTrack(rel);
       const audio = new Audio(url);
       audio.loop = true;
       audio.volume = 0;
       await audio.play();
       this._fadeIn(audio);
       this.current = audio;
+      this.currentKey = rel;
     } catch (_) { /* autoplay blocked or file missing — stay silent */ }
+  }
+
+  _resolveTrack(rel) {
+    if (/^(\/|https?:|data:|blob:)/.test(rel)) return rel;
+    return this.config.asset(rel);
   }
 
   _fadeIn(audio) {

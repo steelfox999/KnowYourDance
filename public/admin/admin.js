@@ -302,11 +302,19 @@ function drawPrintPreview(canvas, data) {
 function music(p) {
   const theme = state.files.theme.data;
   theme.music = theme.music || { volume: 0.4, steps: {} };
-  p.append(h('h1', { text: 'Music' }), h('p', { class: 'sub', text: 'Map a looping track to each step. Files live in the theme assets folder. Missing files play nothing.' }));
+  p.append(h('h1', { text: 'Music' }), h('p', { class: 'sub', text: 'Set one looping track for the kiosk, with optional per-step overrides.' }));
   const steps = ['idle', 'story', 'quiz', 'reveal', 'camera', 'transform', 'results', 'print', 'qr'];
   const rows = steps.map((s) => field(s, h('input', { class: 'grow', value: theme.music.steps[s] || '',
-    placeholder: 'assets/music/…mp3', oninput: (e) => { theme.music.steps[s] = e.target.value || undefined; } })));
-  p.append(card('Volume', [labeledNum('volume 0–1', theme.music, 'volume')]), card('Per-step tracks', rows), saveRow('theme'));
+    placeholder: 'optional override', oninput: (e) => { theme.music.steps[s] = e.target.value || undefined; } })));
+  p.append(
+    card('Loop', [
+      labeledNum('volume 0–1', theme.music, 'volume'),
+      field('Track', h('input', { class: 'grow', value: theme.music.track || '',
+        placeholder: '/assets/Verclub_Indian_Loop.wav', oninput: (e) => { theme.music.track = e.target.value || undefined; } })),
+    ]),
+    card('Per-step overrides', rows),
+    saveRow('theme')
+  );
 }
 
 /* ------------------------------ Raw JSON ------------------------------ */

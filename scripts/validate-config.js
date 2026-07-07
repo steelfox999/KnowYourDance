@@ -91,7 +91,13 @@ if (exp) {
   }
 
   const theme = parts.theme && readJson(parts.theme); checkSchema(theme, parts.theme);
-  if (theme) (theme.idle?.images || []).forEach((rel) => { if (!assetExists(rel)) warn(`idle image not found: ${rel}`); });
+  if (theme) {
+    (theme.idle?.images || []).forEach((rel) => { if (!assetExists(rel)) warn(`idle image not found: ${rel}`); });
+    if (theme.music?.track && !assetExists(theme.music.track)) warn(`music track not found: ${theme.music.track}`);
+    Object.entries(theme.music?.steps || {}).forEach(([step, rel]) => {
+      if (rel && !assetExists(rel)) warn(`music step "${step}" track not found: ${rel}`);
+    });
+  }
 }
 
 console.log(`\n${errors === 0 ? '✓ VALID' : '✗ INVALID'} — ${errors} error(s), ${warnings} warning(s)\n`);
