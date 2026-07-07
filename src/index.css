@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;700&family=Didact+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Warm Indian Museum Palette */
@@ -12,8 +12,8 @@
   --color-gold: #C09A3F;
   --color-gold-light: #DFBA6B;
   
-  --font-primary: 'Albert Sans', sans-serif;
-  --font-serif: 'Didact Gothic', sans-serif;
+  --font-primary: 'Inter', sans-serif;
+  --font-serif: 'Cinzel', serif;
 }
 
 * {

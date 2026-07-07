@@ -128,7 +128,7 @@ function validateLayer(layer, where) {
 
 function validatePrint(print) {
   checkSchema(print, 'print.json');
-  requireFields(print, ['page', 'grid', 'frame'], 'print.json');
+  requireFields(print, ['page'], 'print.json');
   requireFields(print.page, ['size'], 'print.page');
 }
 

@@ -4,7 +4,7 @@ const DANCE_PROFILES = {
     region: 'Karnataka (Mandya, Hassan & Mysuru)',
     materials: 'Carved red cedar wood and silk costumes',
     instruments: 'Tamate frame drum, Are, and brass Kamsale',
-    maskPath: '/assets/masks/somana_kunitha.jpg',
+    maskAsset: 'assets/masks/generated/somana-kunitha-01.png',
     description:
       'Somana Kunitha is an ancient ritual folk dance performed in the river basins of Southern Karnataka during village festivals. Dancers wear massive carved wooden masks representing divine guardians who safeguard the community.',
     maskLore:
@@ -15,7 +15,7 @@ const DANCE_PROFILES = {
     region: 'Purulia (West Bengal), Odisha & Jharkhand',
     materials: 'Paper-mache, clay, peacock feathers, and metallic beads',
     instruments: 'Dhamsa, Dhol, and Shehnai pipes',
-    maskPath: '/assets/masks/chau.jpg',
+    maskAsset: 'assets/masks/generated/chau-01.png',
     description:
       'Purulia Chau is a heroic martial mask dance where dancers enact stories from the Ramayana, Mahabharata, and Puranas through acrobatic leaps, martial stances, and dramatic theatrical movement.',
     maskLore:
@@ -26,7 +26,7 @@ const DANCE_PROFILES = {
     region: 'West Kameng, Arunachal Pradesh',
     materials: 'Lightweight carved alpine wood and silk brocades',
     instruments: 'Tibetan cymbals, wooden gongs, and horns',
-    maskPath: '/assets/masks/bardo_chham.jpg',
+    maskAsset: 'assets/masks/generated/bardo-chham-01.png',
     description:
       'Bardo Chham is a sacred folk dance of the Sherdukpen community. The dance portrays a cosmic battle between guardian virtues and disruptive spirits represented by wild animal avatars.',
     maskLore:
@@ -37,7 +37,7 @@ const DANCE_PROFILES = {
     region: 'North & South Dinajpur, West Bengal',
     materials: 'Sacred Gamhar wood and organic plant dyes',
     instruments: 'Dhak drum and bronze Kansi gong',
-    maskPath: '/assets/masks/gomira.jpg',
+    maskAsset: 'assets/masks/generated/gomira-01.png',
     description:
       'Gomira is a ritual dance from rural Dinajpur. Dancers wear hand-carved wooden deity masks to invoke protective forces and banish darkness from the community.',
     maskLore:

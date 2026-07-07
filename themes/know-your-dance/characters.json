@@ -6,7 +6,6 @@
       "id": "somana-kunitha",
       "name": "Somana Kunitha",
       "title": "Guardian Mask of Karnataka",
-      "portrait": "assets/masks/somana-kunitha.svg",
       "promptSet": "somana-kunitha",
       "weights": { "guardian": 3, "ritual": 3, "bold": 1, "devotion": 1 },
       "reveal": {
@@ -24,7 +23,6 @@
       "id": "chau",
       "name": "Chau",
       "title": "Martial Mask of Eastern India",
-      "portrait": "assets/masks/chau.svg",
       "promptSet": "chau",
       "weights": { "martial": 3, "heroic": 3, "bold": 2 },
       "reveal": {
@@ -41,7 +39,6 @@
       "id": "bardo-chham",
       "name": "Bardo Chham",
       "title": "Himalayan Mask of Balance",
-      "portrait": "assets/masks/bardo-chham.svg",
       "promptSet": "bardo-chham",
       "weights": { "wisdom": 3, "harmony": 3, "community": 1 },
       "reveal": {
@@ -58,7 +55,6 @@
       "id": "gomira",
       "name": "Gomira",
       "title": "Fierce Mask of Bengal",
-      "portrait": "assets/masks/gomira.svg",
       "promptSet": "gomira",
       "weights": { "fierce": 3, "devotion": 3, "community": 2 },
       "reveal": {

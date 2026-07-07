@@ -2,19 +2,16 @@
   "schemaVersion": 1,
   "id": "know-your-dance-print",
   "title": "Your Know Your Dance keepsake",
-  "layout": "wide-polaroid-triptych",
+  "layout": "a5-museum-keepsake",
   "page": { "size": "A5", "orientation": "landscape", "dpi": 300 },
-  "grid": { "cols": 3, "rows": 1 },
-  "marginPct": 0.045,
-  "gutterPct": 0.025,
-  "background": "#fff7e8",
+  "background": "#FFFDF8",
   "order": ["maskVar1", "original", "maskVar2"],
-  "labels": {
-    "maskVar1": "Mask Variation 1",
-    "original": "Original Portrait",
-    "maskVar2": "Mask Variation 2",
-    "mask": "Dance Mask"
-  },
-  "labelColor": "rgba(20,20,20,0.72)",
-  "frame": "assets/frame.svg"
+  "titleColor": "#A51F2B",
+  "descriptionColor": "#8B472E",
+  "footerColor": "#1F1F1F",
+  "logos": [
+    { "src": "/assets/logos/Sangamam Logos.png", "widthPct": 0.112, "heightPct": 0.14, "xPct": 0.096 },
+    { "src": "/assets/logos/TU 26 Logo.png", "widthPct": 0.112, "heightPct": 0.14, "xPct": 0.205 }
+  ],
+  "footer": "Sangamam India is an arts and culture initiative launched by The Shibulal Family Philanthropic Initiatives (SFPI) to promote and preserve India’s rich heritage of classical music, dance, and folk art forms"
 }

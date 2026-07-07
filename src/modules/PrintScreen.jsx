@@ -47,7 +47,7 @@ export default function PrintScreen({ config, session, onNext }) {
 
     setIsPrinting(true);
     setStatusText('Sending keepsake sheet to the printer...');
-    const filename = `storymachine_${Date.now()}.png`;
+    const filename = `know_your_dance_${Date.now()}.png`;
 
     try {
       await savePng(filename, sheetDataUrl);
@@ -83,7 +83,7 @@ export default function PrintScreen({ config, session, onNext }) {
         </div>
 
         <h2 className="print-title font-serif text-gradient-gold">
-          {print.title || 'Your Keepsake Sheet'}
+          {print.title || 'Your Know Your Dance Keepsake'}
         </h2>
 
         <div className="paper-preview">
@@ -106,7 +106,7 @@ function pageMM(print) {
     if (print.page.orientation === 'landscape') [w, h] = [h, w];
     return [w, h];
   }
-  return [print.page?.widthMm || 148, print.page?.heightMm || 210];
+  return [print.page?.widthMm || 210, print.page?.heightMm || 148];
 }
 
 async function composeSheet(cfg, session, previewCanvas) {
@@ -116,202 +116,150 @@ async function composeSheet(cfg, session, previewCanvas) {
   const W = Math.round((wmm / MM_PER_INCH) * dpi);
   const H = Math.round((hmm / MM_PER_INCH) * dpi);
 
+  await document.fonts?.ready;
+
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = print.background || '#ffffff';
+
+  ctx.fillStyle = print.background || '#FFFDF8';
   ctx.fillRect(0, 0, W, H);
+  drawBackgroundPattern(ctx, W, H);
 
-  if (print.layout === 'wide-polaroid-triptych') {
-    await composeWidePolaroidSheet(cfg, session, print, canvas, previewCanvas, W, H);
-    return canvas.toDataURL('image/png');
-  }
+  const order = print.order || ['maskVar1', 'original', 'maskVar2'];
+  const images = await Promise.all(order.map((key) => loadOptionalImage(session.outputs?.[key])));
+  const logos = await Promise.all((print.logos || []).map((logo) => loadOptionalImage(logo.src)));
+  const alignment = session.outputs?._alignment;
 
-  const grid = print.grid || { cols: 2, rows: 2 };
-  const margin = frac(print.marginPct, 0.05) * Math.min(W, H);
-  const gutter = frac(print.gutterPct, 0.03) * Math.min(W, H);
-  const cellW = (W - margin * 2 - gutter * (grid.cols - 1)) / grid.cols;
-  const cellH = (H - margin * 2 - gutter * (grid.rows - 1)) / grid.rows;
-
-  const order = (print.order || ['original', 'mask', 'costume', 'combined']).filter((key) => session.outputs?.[key]);
-  const imgs = await Promise.all(order.map((key) => loadImage(session.outputs[key])));
-
-  imgs.forEach((img, index) => {
-    const col = index % grid.cols;
-    const row = Math.floor(index / grid.cols);
-    const x = margin + col * (cellW + gutter);
-    const y = margin + row * (cellH + gutter);
-    drawCover(ctx, img, x, y, cellW, cellH);
-    if (print.labels && print.labels[order[index]]) {
-      ctx.fillStyle = print.labelColor || 'rgba(0,0,0,0.6)';
-      ctx.font = `${Math.round(cellH * 0.06)}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillText(print.labels[order[index]], x + cellW / 2, y + cellH - cellH * 0.03);
-    }
-  });
-
-  if (print.frame) {
-    try {
-      const frameUrl = await cfg.asset(print.frame);
-      const frame = await loadImage(frameUrl);
-      ctx.drawImage(frame, 0, 0, W, H);
-    } catch (_) {}
-  }
-
-  const previewCtx = previewCanvas.getContext('2d');
-  const previewW = 340;
-  const previewH = Math.round((H / W) * 340);
-  previewCanvas.width = previewW;
-  previewCanvas.height = previewH;
-  previewCtx.drawImage(canvas, 0, 0, previewW, previewH);
+  drawPortraitRow(ctx, images, W, H, alignment);
+  drawCaption(ctx, session, print, W, H);
+  drawLogos(ctx, logos, print.logos || [], W, H);
+  drawFooter(ctx, print, W, H);
+  drawPreview(canvas, previewCanvas);
 
   return canvas.toDataURL('image/png');
 }
 
-async function composeWidePolaroidSheet(cfg, session, print, canvas, previewCanvas, W, H) {
-  const ctx = canvas.getContext('2d');
-  const order = (print.order || ['maskVar1', 'original', 'maskVar2']).filter((key) => session.outputs?.[key]);
-  const images = await Promise.all(order.map((key) => loadImage(session.outputs[key])));
-  const labels = print.labels || {};
-  const character = session.character || {};
-  const alignment = session.outputs?._alignment;
-
-  drawSubtleBackground(ctx, W, H);
-
-  const cardX = Math.round(W * 0.055);
-  const cardY = Math.round(H * 0.06);
-  const cardW = W - cardX * 2;
-  const cardH = H - cardY * 2;
+function drawBackgroundPattern(ctx, W, H) {
+  const motifW = W * 0.085;
+  const motifH = H * 0.13;
+  const gapX = W * 0.006;
+  const gapY = H * 0.023;
 
   ctx.save();
-  ctx.shadowColor = 'rgba(44, 36, 27, 0.12)';
-  ctx.shadowBlur = Math.round(W * 0.02);
-  ctx.shadowOffsetY = Math.round(H * 0.014);
-  ctx.fillStyle = '#fffdf7';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
+  ctx.strokeStyle = '#F1DEC8';
+  ctx.lineWidth = Math.max(1, W * 0.00065);
+  ctx.globalAlpha = 0.48;
+
+  for (let y = -motifH * 0.35; y < H + motifH; y += motifH + gapY) {
+    for (let x = -motifW * 0.5; x < W + motifW; x += motifW + gapX) {
+      drawRoundedMotif(ctx, x, y, motifW, motifH);
+    }
+  }
   ctx.restore();
+}
 
-  ctx.strokeStyle = '#E2D7C1';
-  ctx.lineWidth = Math.max(2, Math.round(W * 0.0009));
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
+function drawRoundedMotif(ctx, x, y, w, h) {
+  const r = Math.min(w, h) * 0.28;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r * 1.35);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r * 1.35);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.stroke();
+}
 
-  const innerX = Math.round(cardW * 0.046);
-  const topInset = Math.round(cardH * 0.075);
-  const photoX = cardX + innerX;
-  const photoY = cardY + topInset;
-  const photoW = cardW - innerX * 2;
-  const photoH = Math.round(cardH * 0.575);
-  const paneGap = Math.max(10, Math.round(W * 0.004));
-  const paneCount = Math.max(images.length, 1);
-  const paneW = (photoW - paneGap * (paneCount - 1)) / paneCount;
-
-  ctx.fillStyle = '#1F1916';
-  ctx.fillRect(photoX, photoY, photoW, photoH);
+function drawPortraitRow(ctx, images, W, H, alignment) {
+  const tileW = W * 0.247;
+  const tileH = H * 0.44;
+  const gap = W * 0.071;
+  const x0 = (W - tileW * 3 - gap * 2) / 2;
+  const y = H * 0.087;
 
   images.forEach((img, index) => {
-    const pane = {
-      x: photoX + index * (paneW + paneGap),
-      y: photoY,
-      w: paneW,
-      h: photoH,
-    };
-    drawTriptychPane(ctx, img, pane, labels[order[index]] || order[index], order[index] === 'original', alignment);
+    const x = x0 + index * (tileW + gap);
+    ctx.fillStyle = '#EFEFEF';
+    ctx.fillRect(x, y, tileW, tileH);
+
+    if (img) {
+      drawAlignedCover(ctx, img, x, y, tileW, tileH, alignment);
+    } else {
+      drawPortraitPlaceholder(ctx, x, y, tileW, tileH);
+    }
   });
+}
 
-  for (let i = 1; i < paneCount; i++) {
-    const x = photoX + i * paneW + (i - 0.5) * paneGap;
-    ctx.fillStyle = '#fffdf7';
-    ctx.fillRect(x - paneGap / 2, photoY, paneGap, photoH);
-  }
+function drawPortraitPlaceholder(ctx, x, y, w, h) {
+  const centerX = x + w / 2;
+  const headR = w * 0.19;
 
-  ctx.strokeStyle = '#C09A3F';
-  ctx.lineWidth = Math.max(3, Math.round(W * 0.0012));
-  ctx.strokeRect(photoX, photoY, photoW, photoH);
-
-  const captionY = photoY + photoH + Math.round(cardH * 0.095);
-  const textX = cardX + innerX;
-  const textW = cardW - innerX * 2;
-
-  ctx.strokeStyle = '#E2D7C1';
-  ctx.lineWidth = Math.max(1, Math.round(W * 0.0006));
+  ctx.save();
+  ctx.fillStyle = '#D5D5D5';
   ctx.beginPath();
-  ctx.moveTo(textX, captionY - Math.round(H * 0.042));
-  ctx.lineTo(textX + textW, captionY - Math.round(H * 0.042));
-  ctx.stroke();
+  ctx.arc(centerX, y + h * 0.47, headR, 0, Math.PI * 2);
+  ctx.fill();
 
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#8E341B';
-  ctx.font = `${Math.round(H * 0.036)}px "Didact Gothic", sans-serif`;
-  ctx.fillText('Know Your Dance', textX, captionY);
+  ctx.beginPath();
+  ctx.arc(centerX, y + h * 0.98, w * 0.39, Math.PI, Math.PI * 2);
+  ctx.lineTo(centerX + w * 0.39, y + h);
+  ctx.lineTo(centerX - w * 0.39, y + h);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
 
-  ctx.fillStyle = '#C09A3F';
-  ctx.font = `600 ${Math.round(H * 0.014)}px "Albert Sans", sans-serif`;
-  ctx.textAlign = 'right';
-  ctx.fillText(character.name || 'Your Chosen Mask', textX + textW, captionY);
+function drawCaption(ctx, session, print, W, H) {
+  const character = session.character || {};
+  const title = character.name || print.defaultTitle || 'Know Your Dance';
+  const copy = session.revealText || `Your portrait carries the presence of ${title}.`;
 
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#2C241B';
-  ctx.font = `500 ${Math.round(H * 0.017)}px "Albert Sans", sans-serif`;
-  ctx.fillText('MASK VAR 1  /  ORIGINAL PORTRAIT  /  MASK VAR 2', textX, captionY + Math.round(H * 0.035));
-
-  ctx.font = `${Math.round(H * 0.018)}px "Albert Sans", sans-serif`;
-  const description = [
-    session.revealText || `Your answers aligned with ${character.name || 'this mask'}.`,
-    character.title ? `Chosen mask: ${character.title}.` : '',
-  ].filter(Boolean).join(' ');
-  wrapText(ctx, description, textX, captionY + Math.round(H * 0.075), textW, Math.round(H * 0.029), 3);
-
-  ctx.fillStyle = '#8A7B6E';
-  ctx.font = `500 ${Math.round(H * 0.012)}px "Albert Sans", sans-serif`;
+  ctx.save();
   ctx.textAlign = 'center';
-  ctx.fillText('EXHIBIT SOUVENIR - A5 LANDSCAPE INSTANT PRINT', cardX + cardW / 2, cardY + cardH - Math.round(H * 0.028));
+  ctx.fillStyle = print.titleColor || '#A51F2B';
+  ctx.font = `500 ${Math.round(H * 0.056)}px "Cinzel", serif`;
+  ctx.fillText(title, W / 2, H * 0.646);
 
-  drawPreview(canvas, previewCanvas);
+  ctx.fillStyle = print.descriptionColor || '#8B472E';
+  ctx.font = `${Math.round(H * 0.027)}px "Inter", sans-serif`;
+  wrapText(ctx, copy, W / 2, H * 0.712, W * 0.68, H * 0.037, 3, 'center');
+  ctx.restore();
 }
 
-function drawSubtleBackground(ctx, W, H) {
-  const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, '#F8F5F0');
-  bg.addColorStop(0.55, '#fffaf0');
-  bg.addColorStop(1, '#EDE1CA');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
+function drawLogos(ctx, logoImages, logoConfig, W, H) {
+  const box = H * 0.145;
+  const gap = W * 0.028;
+  const x0 = W * 0.12;
+  const y = H * 0.805;
 
-  ctx.fillStyle = 'rgba(192, 154, 63, 0.08)';
-  for (let i = 0; i < 32; i++) {
-    const x = (i * 521) % W;
-    const y = (i * 283) % H;
-    const r = 5 + (i % 4) * 2;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  logoImages.forEach((img, index) => {
+    if (!img) return;
+    const cfg = logoConfig[index] || {};
+    const boxW = cfg.widthPct ? W * cfg.widthPct : box;
+    const boxH = cfg.heightPct ? H * cfg.heightPct : box;
+    const x = cfg.xPct ? W * cfg.xPct : x0 + index * (boxW + gap);
+    drawContain(ctx, img, x, y, boxW, boxH);
+  });
 }
 
-function drawTriptychPane(ctx, img, pane, label, isOriginal, alignment) {
-  drawFaceAlignedCover(ctx, img, pane.x, pane.y, pane.w, pane.h, alignment);
+function drawFooter(ctx, print, W, H) {
+  const footer = print.footer || '';
+  if (!footer) return;
 
-  const labelH = Math.round(pane.h * 0.085);
-  const gradient = ctx.createLinearGradient(0, pane.y + pane.h - labelH * 1.8, 0, pane.y + pane.h);
-  gradient.addColorStop(0, 'rgba(31, 25, 22, 0)');
-  gradient.addColorStop(1, 'rgba(31, 25, 22, 0.66)');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(pane.x, pane.y + pane.h - labelH * 1.8, pane.w, labelH * 1.8);
-
-  if (isOriginal) {
-    ctx.strokeStyle = '#F3C969';
-    ctx.lineWidth = Math.max(3, Math.round(pane.w * 0.01));
-    ctx.strokeRect(pane.x + 1, pane.y + 1, pane.w - 2, pane.h - 2);
-  }
-
-  ctx.fillStyle = '#FFF8E9';
+  ctx.save();
+  ctx.fillStyle = print.footerColor || '#1F1F1F';
   ctx.textAlign = 'center';
-  ctx.font = `600 ${Math.round(pane.h * 0.032)}px "Albert Sans", sans-serif`;
-  ctx.fillText(label.toUpperCase(), pane.x + pane.w / 2, pane.y + pane.h - Math.round(labelH * 0.42));
+  ctx.font = `${Math.round(H * 0.014)}px "Inter", sans-serif`;
+  wrapText(ctx, footer, W * 0.69, H * 0.865, W * 0.48, H * 0.019, 4, 'center');
+  ctx.restore();
 }
 
-function drawFaceAlignedCover(ctx, img, x, y, w, h, alignment) {
+function drawAlignedCover(ctx, img, x, y, w, h, alignment) {
   const crop = faceCrop(img, w / h, alignment);
   if (!crop) {
     drawCover(ctx, img, x, y, w, h);
@@ -339,7 +287,7 @@ function faceCrop(img, targetAspect, alignment) {
   const faceH = face.h * scaleY;
   if (![cx, cy, faceW, faceH].every(Number.isFinite) || faceW <= 0 || faceH <= 0) return null;
 
-  let cropH = Math.max(faceH * 2.22, (faceW * 1.82) / targetAspect);
+  let cropH = Math.max(faceH * 2.2, (faceW * 1.75) / targetAspect);
   cropH = clamp(cropH, img.height * 0.62, img.height);
   let cropW = cropH * targetAspect;
 
@@ -348,20 +296,36 @@ function faceCrop(img, targetAspect, alignment) {
     cropH = cropW / targetAspect;
   }
 
-  const faceYInPane = 0.43;
   const x = clamp(cx - cropW * 0.5, 0, img.width - cropW);
-  const y = clamp(cy - cropH * faceYInPane, 0, img.height - cropH);
+  const y = clamp(cy - cropH * 0.43, 0, img.height - cropH);
   return { x, y, w: cropW, h: cropH };
 }
 
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+function drawCover(ctx, img, x, y, w, h) {
+  const scale = Math.max(w / img.width, h / img.height);
+  const iw = img.width * scale;
+  const ih = img.height * scale;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+  ctx.restore();
 }
 
-function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
-  const words = String(text).split(/\s+/);
+function drawContain(ctx, img, x, y, w, h) {
+  const scale = Math.min(w / img.width, h / img.height);
+  const iw = img.width * scale;
+  const ih = img.height * scale;
+  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity, align = 'left') {
+  const words = String(text).trim().split(/\s+/).filter(Boolean);
   let line = '';
   let lines = 0;
+
+  ctx.textAlign = align;
   for (let i = 0; i < words.length; i++) {
     const testLine = line ? `${line} ${words[i]}` : words[i];
     if (ctx.measureText(testLine).width > maxWidth && line) {
@@ -382,27 +346,23 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
 
 function drawPreview(canvas, previewCanvas) {
   const previewCtx = previewCanvas.getContext('2d');
-  const previewW = 520;
+  const previewW = 596;
   const previewH = Math.round((canvas.height / canvas.width) * previewW);
   previewCanvas.width = previewW;
   previewCanvas.height = previewH;
   previewCtx.drawImage(canvas, 0, 0, previewW, previewH);
 }
 
-function drawCover(ctx, img, x, y, w, h) {
-  const scale = Math.max(w / img.width, h / img.height);
-  const iw = img.width * scale;
-  const ih = img.height * scale;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(x, y, w, h);
-  ctx.clip();
-  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
-  ctx.restore();
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
-function frac(v, dflt) {
-  return v === undefined ? dflt : v;
+function loadOptionalImage(src) {
+  if (!src) return Promise.resolve(null);
+  return loadImage(src).catch((err) => {
+    console.warn('Unable to load print asset:', src, err);
+    return null;
+  });
 }
 
 function loadImage(src) {

@@ -16,8 +16,8 @@
     "gold": "#C09A3F",
     "goldLight": "#DFBA6B",
     "muted": "#8A7B6E",
-    "fontDisplay": "\"Didact Gothic\", sans-serif",
-    "fontBody": "\"Albert Sans\", sans-serif"
+    "fontDisplay": "\"Cinzel\", serif",
+    "fontBody": "\"Inter\", sans-serif"
   },
   "music": {
     "volume": 0.4,

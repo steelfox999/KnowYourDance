@@ -22,7 +22,7 @@ export async function readJson(themeId, relPath) {
 }
 
 // Assets resolve to same-origin relative URLs — no file:// canvas tainting.
-export async function assetUrl(themeId, relPath) {
+export function assetUrl(themeId, relPath) {
   return `/themes/${themeId}/${relPath}`;
 }
 

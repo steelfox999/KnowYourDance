@@ -32,6 +32,7 @@ function checkSchema(obj, name) {
 }
 
 function assetExists(rel) {
+  if (typeof rel === 'string' && rel.startsWith('/')) return fs.existsSync(path.join(process.cwd(), 'public', rel.slice(1)));
   return fs.existsSync(path.join(themeDir, rel));
 }
 
@@ -65,7 +66,6 @@ if (exp) {
   if (chars) (chars.characters || []).forEach((c, i) => {
     if (!c.id || !c.name || !c.weights || !c.reveal) fail(`character[${i}]: missing id/name/weights/reveal`);
     if (c.reveal && !c.reveal.template) fail(`character[${i}].reveal: missing template`);
-    if (c.portrait && !assetExists(c.portrait)) warn(`character[${i}] portrait not found: ${c.portrait}`);
   });
 
   const prompts = parts.prompts && readJson(parts.prompts); checkSchema(prompts, parts.prompts);
@@ -85,7 +85,9 @@ if (exp) {
   const print = parts.print && readJson(parts.print); checkSchema(print, parts.print);
   if (print) {
     if (!print.page || !print.page.size) fail('print.json: missing page.size');
-    if (print.frame && !assetExists(print.frame)) warn(`print frame not found: ${print.frame}`);
+    (print.logos || []).forEach((logo, i) => {
+      if (logo.src && !assetExists(logo.src)) warn(`print logo[${i}] not found: ${logo.src}`);
+    });
   }
 
   const theme = parts.theme && readJson(parts.theme); checkSchema(theme, parts.theme);

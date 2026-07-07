@@ -246,7 +246,7 @@ function layerEditor(title, layer) {
 /* ------------------------------ Print Layout ------------------------------ */
 function print(p) {
   const data = state.files.print.data;
-  p.append(h('h1', { text: 'Print Layout' }), h('p', { class: 'sub', text: 'A5 4-up sheet. Frame is a venue-supplied transparent overlay.' }));
+  p.append(h('h1', { text: 'Print Layout' }), h('p', { class: 'sub', text: 'A5 landscape keepsake with three portraits, logos, and footer copy.' }));
   const preview = h('canvas', { class: 'preview-print', width: 210, height: 297 });
   const redraw = () => drawPrintPreview(preview, data);
 
@@ -257,16 +257,13 @@ function print(p) {
       labeledNum('DPI', data.page, 'dpi'),
     ]),
   ]),
-  card('Grid & spacing', [
-    h('div', { class: 'row' }, [
-      labeledNum('cols', data.grid, 'cols', redraw),
-      labeledNum('rows', data.grid, 'rows', redraw),
-      labeledNum('marginPct', data, 'marginPct', redraw),
-      labeledNum('gutterPct', data, 'gutterPct', redraw),
-    ]),
+  card('Keepsake content', [
     field('Order (comma separated)', h('input', { class: 'grow', value: (data.order || []).join(', '),
       oninput: (e) => { data.order = e.target.value.split(',').map((s) => s.trim()).filter(Boolean); redraw(); } })),
-    field('Frame asset path', h('input', { class: 'grow', value: data.frame || '', oninput: (e) => (data.frame = e.target.value) })),
+    field('Background', h('input', { class: 'grow', value: data.background || '', oninput: (e) => { data.background = e.target.value; redraw(); } })),
+    field('Title color', h('input', { class: 'grow', value: data.titleColor || '', oninput: (e) => { data.titleColor = e.target.value; redraw(); } })),
+    field('Description color', h('input', { class: 'grow', value: data.descriptionColor || '', oninput: (e) => { data.descriptionColor = e.target.value; redraw(); } })),
+    field('Footer', h('textarea', { class: 'grow', rows: '3', oninput: (e) => { data.footer = e.target.value; redraw(); } }, data.footer || '')),
   ]),
   card('Preview', [preview]),
   saveRow('print'));
@@ -282,19 +279,23 @@ function drawPrintPreview(canvas, data) {
   canvas.width = w * scale; canvas.height = h2 * scale;
   const W = canvas.width, H = canvas.height;
   ctx.fillStyle = data.background || '#fff'; ctx.fillRect(0, 0, W, H);
-  const grid = data.grid || { cols: 2, rows: 2 };
-  const m = (data.marginPct ?? 0.05) * Math.min(W, H);
-  const g = (data.gutterPct ?? 0.03) * Math.min(W, H);
-  const cw = (W - m * 2 - g * (grid.cols - 1)) / grid.cols;
-  const ch = (H - m * 2 - g * (grid.rows - 1)) / grid.rows;
-  ctx.fillStyle = '#d9c9ad'; ctx.strokeStyle = '#c8622d';
-  const count = grid.cols * grid.rows;
-  for (let i = 0; i < count; i++) {
-    const col = i % grid.cols, row = Math.floor(i / grid.cols);
-    const x = m + col * (cw + g), y = m + row * (ch + g);
-    ctx.fillRect(x, y, cw, ch);
-  }
-  if (data.frame) { ctx.lineWidth = 3; ctx.strokeRect(2, 2, W - 4, H - 4); }
+  ctx.strokeStyle = '#f1dec8'; ctx.globalAlpha = 0.55;
+  for (let y = -12; y < H; y += 36) for (let x = -8; x < W; x += 36) ctx.strokeRect(x, y, 22, 28);
+  ctx.globalAlpha = 1;
+  const tileW = W * 0.247, tileH = H * 0.44, gap = W * 0.071;
+  const x0 = (W - tileW * 3 - gap * 2) / 2, y0 = H * 0.087;
+  ctx.fillStyle = '#efefef';
+  for (let i = 0; i < 3; i++) ctx.fillRect(x0 + i * (tileW + gap), y0, tileW, tileH);
+  ctx.fillStyle = data.titleColor || '#a51f2b';
+  ctx.font = `${Math.round(H * 0.056)}px Georgia, serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('Somana Kunitha', W / 2, H * 0.646);
+  ctx.fillStyle = data.descriptionColor || '#8b472e';
+  ctx.font = `${Math.round(H * 0.026)}px Arial, sans-serif`;
+  ctx.fillText('The chosen mask and portrait text appear here.', W / 2, H * 0.712);
+  ctx.fillStyle = '#1f1f1f';
+  ctx.font = `${Math.round(H * 0.014)}px Arial, sans-serif`;
+  ctx.fillText('Sangamam India footer copy', W * 0.69, H * 0.865);
 }
 
 /* ------------------------------ Music ------------------------------ */

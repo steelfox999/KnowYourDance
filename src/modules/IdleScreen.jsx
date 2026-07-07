@@ -6,6 +6,7 @@ export default function IdleScreen({ config, onNext }) {
   const containerRef = useRef(null);
   const idleCfg = config.theme.idle || {};
   const title = config.experience?.name || idleCfg.title || 'Know Your Dance';
+  const heroMask = config.asset('assets/masks/generated/somana-kunitha-01.png');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -50,7 +51,7 @@ export default function IdleScreen({ config, onNext }) {
         </svg>
 
         <div className="hero-mask-preview">
-          <img src="/assets/masks/somana_kunitha.jpg" alt="Indian sacred dance mask" />
+          <img src={heroMask} alt="Indian sacred dance mask" />
         </div>
       </div>
 

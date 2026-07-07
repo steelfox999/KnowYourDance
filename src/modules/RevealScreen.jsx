@@ -13,6 +13,7 @@ export default function RevealScreen({ config, session, onNext }) {
     [config.characters, session.answers]
   );
   const profile = getDanceProfile(character.id);
+  const maskPreviewPath = profile.maskAsset ? config.asset(profile.maskAsset) : null;
   const topTraits = ranked.slice(0, 4);
 
   session.character = character;
@@ -52,7 +53,9 @@ export default function RevealScreen({ config, session, onNext }) {
         <div className="reveal-grid">
           <div className="souvenir-wrapper reveal-panel-anim">
             <div className="souvenir-canvas-container mask-preview-container">
-              <img src={profile.maskPath} alt={`${character.name} mask`} className="mask-preview-image" />
+              {maskPreviewPath && (
+                <img src={maskPreviewPath} alt={`${character.name} mask`} className="mask-preview-image" />
+              )}
               <div className="souvenir-label">Museum Mask Preview</div>
             </div>
 
