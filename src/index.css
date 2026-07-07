@@ -1,4 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+@font-face {
+  font-family: 'Cinzel';
+  src: url('/assets/fonts/Cinzel-Variable.ttf') format('truetype');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/Inter-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
 
 :root {
   /* Warm Indian Museum Palette */
@@ -14,6 +28,8 @@
   
   --font-primary: 'Inter', sans-serif;
   --font-serif: 'Cinzel', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-display: 'Cinzel', serif;
 }
 
 * {
@@ -308,6 +324,7 @@ h1, h2, h3, h4 {
   margin-bottom: 40px;
 }
 #storyLineText {
+  font-family: var(--font-body);
   font-size: 2rem;
   line-height: 1.5;
   color: var(--color-text);

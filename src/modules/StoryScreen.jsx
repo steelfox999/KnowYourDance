@@ -51,7 +51,7 @@ export default function StoryScreen({ config, onNext }) {
         </div>
 
         <div className="story-content">
-          <p ref={textRef} id="storyLineText" className="font-serif">
+          <p ref={textRef} id="storyLineText">
             {currentBeat.text}
           </p>
         </div>
