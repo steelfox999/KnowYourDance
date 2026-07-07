@@ -37,8 +37,8 @@ export async function savePng(filename, base64) {
   return filename;
 }
 
-export async function printHtml(html) {
-  if (hasNative) return window.platform.printSheet(html);
+export async function printHtml(html, options = {}) {
+  if (hasNative) return window.platform.printSheet(html, options);
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();

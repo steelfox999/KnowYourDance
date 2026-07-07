@@ -73,16 +73,51 @@ ipcMain.handle('output:savePng', (_e, filename, base64) => {
 });
 
 // Print an isolated print page (built by the renderer).
-ipcMain.handle('print:sheet', async (_e, html) => {
+ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
   const printWin = new BrowserWindow({ show: false });
-  await printWin.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
-  return new Promise((resolve) => {
-    printWin.webContents.print({ silent: false, printBackground: true }, (ok) => {
-      printWin.close();
-      resolve(ok);
+  try {
+    await printWin.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+    await printWin.webContents.executeJavaScript(`
+      Promise.all([
+        document.fonts?.ready || Promise.resolve(),
+        ...Array.from(document.images).map((img) => img.complete
+          ? Promise.resolve()
+          : new Promise((resolve) => {
+              img.onload = resolve;
+              img.onerror = resolve;
+            }))
+      ])
+    `);
+
+    const printOptions = {
+      silent: true,
+      printBackground: true,
+      landscape: options.landscape === true,
+      margins: { marginType: 'none' },
+    };
+    const pageSize = normalizePageSize(options.pageSizeMicrons);
+    if (pageSize) printOptions.pageSize = pageSize;
+    if (process.env.SM_PRINTER) printOptions.deviceName = process.env.SM_PRINTER;
+
+    return await new Promise((resolve, reject) => {
+      printWin.webContents.print(printOptions, (ok, failureReason) => {
+        if (ok) resolve(true);
+        else reject(new Error(failureReason || 'Silent print failed'));
+      });
     });
-  });
+  } finally {
+    if (!printWin.isDestroyed()) {
+      printWin.close();
+    }
+  }
 });
+
+function normalizePageSize(size) {
+  const width = Number(size?.width);
+  const height = Number(size?.height);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return null;
+  return { width: Math.round(width), height: Math.round(height) };
+}
 
 function safeThemePath(themeId, relPath) {
   const base = path.join(THEMES_DIR, sanitize(themeId));

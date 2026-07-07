@@ -63,7 +63,13 @@ export default function PrintScreen({ config, session, onNext }) {
     </style></head><body><img src="${sheetDataUrl}"></body></html>`;
 
     try {
-      await printHtml(html);
+      await printHtml(html, {
+        landscape: wmm > hmm,
+        pageSizeMicrons: {
+          width: Math.round(wmm * 1000),
+          height: Math.round(hmm * 1000),
+        },
+      });
       setStatusText('Print job sent.');
       setTimeout(() => onNext(), 1200);
     } catch (err) {

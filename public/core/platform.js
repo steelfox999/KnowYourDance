@@ -22,7 +22,7 @@ export async function readJson(themeId, relPath) {
 }
 
 // Assets resolve to same-origin relative URLs — no file:// canvas tainting.
-export async function assetUrl(themeId, relPath) {
+export function assetUrl(themeId, relPath) {
   return `/themes/${themeId}/${relPath}`;
 }
 
@@ -37,8 +37,8 @@ export async function savePng(filename, base64) {
   return filename;
 }
 
-export async function printHtml(html) {
-  if (hasNative) return window.platform.printSheet(html);
+export async function printHtml(html, options = {}) {
+  if (hasNative) return window.platform.printSheet(html, options);
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();

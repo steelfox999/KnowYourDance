@@ -11,5 +11,5 @@ contextBridge.exposeInMainWorld('platform', {
   listThemes: () => ipcRenderer.invoke('themes:list'),
   writeJson: (themeId, relPath, data) => ipcRenderer.invoke('themes:writeJson', themeId, relPath, data),
   savePng: (filename, base64) => ipcRenderer.invoke('output:savePng', filename, base64),
-  printSheet: (html) => ipcRenderer.invoke('print:sheet', html),
+  printSheet: (html, options) => ipcRenderer.invoke('print:sheet', html, options),
 });
