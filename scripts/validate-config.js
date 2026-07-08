@@ -43,12 +43,60 @@ function checkLayer(layer, where) {
   }
 }
 
+function validateSelectionCoverage(characters, questions) {
+  if (!characters.length || !questions.length) return;
+
+  const optionCounts = questions.map((q) => q.options?.length || 0);
+  const sharedOptionCount = Math.min(...optionCounts);
+  if (sharedOptionCount <= 0) return;
+
+  const selectedIds = [];
+  for (let optionIndex = 0; optionIndex < sharedOptionCount; optionIndex++) {
+    const traitScores = {};
+    questions.forEach((question) => {
+      const traits = question.options[optionIndex]?.traits || {};
+      Object.entries(traits).forEach(([trait, value]) => {
+        traitScores[trait] = (traitScores[trait] || 0) + value;
+      });
+    });
+
+    const selected = selectCharacter(characters, traitScores);
+    if (!selected) {
+      fail(`quiz option column ${optionIndex + 1} does not positively match any character`);
+    } else {
+      selectedIds.push(selected.id);
+    }
+  }
+
+  const expectedCoverage = Math.min(characters.length, sharedOptionCount);
+  if (new Set(selectedIds).size < expectedCoverage) {
+    fail(`quiz selection coverage only maps to ${new Set(selectedIds).size}/${expectedCoverage} expected characters (${selectedIds.join(', ')})`);
+  }
+}
+
+function selectCharacter(characters, traitScores) {
+  let best = null;
+  let bestScore = -Infinity;
+  characters.forEach((character) => {
+    let score = 0;
+    Object.entries(character.weights || {}).forEach(([trait, weight]) => {
+      score += (traitScores[trait] || 0) * weight;
+    });
+    if (score > bestScore) {
+      bestScore = score;
+      best = character;
+    }
+  });
+  return bestScore > 0 ? best : null;
+}
+
 console.log(`\nValidating ${themeDir}\n`);
 
 const exp = readJson('experience.json');
 checkSchema(exp, 'experience.json');
 if (exp) {
   for (const k of ['id', 'name', 'parts']) if (exp[k] === undefined) fail(`experience.json: missing ${k}`);
+  validateExperienceFlow(exp);
   const parts = exp.parts || {};
   for (const k of ['story', 'quiz', 'characters', 'prompts', 'print', 'theme'])
     if (!parts[k]) fail(`experience.parts: missing ${k}`);
@@ -57,10 +105,14 @@ if (exp) {
   if (story && (!Array.isArray(story.beats) || !story.beats.length)) fail('story.json: beats must be non-empty array');
 
   const quiz = parts.quiz && readJson(parts.quiz); checkSchema(quiz, parts.quiz);
-  if (quiz) (quiz.questions || []).forEach((q, i) => {
-    if (!q.id || !q.prompt || !q.options) fail(`quiz q[${i}]: missing id/prompt/options`);
-    (q.options || []).forEach((o, j) => { if (!o.label || !o.traits) fail(`quiz q[${i}].opt[${j}]: missing label/traits`); });
-  });
+  if (quiz) {
+    if (!Array.isArray(quiz.questions) || !quiz.questions.length) fail('quiz.json: questions must be non-empty array');
+    (quiz.questions || []).forEach((q, i) => {
+      if (!q.id || !q.prompt || !q.options) fail(`quiz q[${i}]: missing id/prompt/options`);
+      if (!Array.isArray(q.options) || !q.options.length) fail(`quiz q[${i}]: options must be non-empty`);
+      (q.options || []).forEach((o, j) => { if (!o.label || !o.traits) fail(`quiz q[${i}].opt[${j}]: missing label/traits`); });
+    });
+  }
 
   const chars = parts.characters && readJson(parts.characters); checkSchema(chars, parts.characters);
   if (chars) (chars.characters || []).forEach((c, i) => {
@@ -81,6 +133,7 @@ if (exp) {
     const setId = c.promptSet || c.id;
     if (!prompts.sets[setId]) fail(`character "${c.id}" has no prompt set "${setId}"`);
   });
+  if (chars && quiz) validateSelectionCoverage(chars.characters || [], quiz.questions || []);
 
   const print = parts.print && readJson(parts.print); checkSchema(print, parts.print);
   if (print) {
@@ -98,6 +151,16 @@ if (exp) {
       if (rel && !assetExists(rel)) warn(`music step "${step}" track not found: ${rel}`);
     });
   }
+}
+
+function validateExperienceFlow(exp) {
+  const flow = exp.flow;
+  if (!Array.isArray(flow) || !flow.length) return;
+  const quiz = flow.indexOf('quiz');
+  const camera = flow.indexOf('camera');
+  const reveal = flow.indexOf('reveal');
+  if (quiz < 0 || camera < 0 || reveal < 0) fail('experience.flow must include quiz, camera, and reveal');
+  else if (!(quiz < camera && camera < reveal)) fail('experience.flow must order quiz before camera before reveal');
 }
 
 console.log(`\n${errors === 0 ? '✓ VALID' : '✗ INVALID'} — ${errors} error(s), ${warnings} warning(s)\n`);

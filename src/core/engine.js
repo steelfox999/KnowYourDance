@@ -19,8 +19,8 @@ export class Engine {
   constructor({ config }) {
     this.config = config;
     this.flow = config.experience.flow || [
-      STEPS.IDLE, STEPS.STORY, STEPS.QUIZ, STEPS.REVEAL,
-      STEPS.CAMERA, STEPS.TRANSFORM, STEPS.RESULTS, STEPS.PRINT, STEPS.QR,
+      STEPS.IDLE, STEPS.STORY, STEPS.QUIZ, STEPS.CAMERA,
+      STEPS.REVEAL, STEPS.TRANSFORM, STEPS.RESULTS, STEPS.PRINT, STEPS.QR,
     ];
     this.index = 0;
     this.session = this._freshSession();

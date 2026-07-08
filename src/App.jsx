@@ -141,7 +141,14 @@ export default function App() {
       case STEPS.QUIZ:
         return <QuizScreen config={config} session={sessionState} onNext={() => engine.next()} />;
       case STEPS.REVEAL:
-        return <RevealScreen config={config} session={sessionState} onNext={() => engine.next()} />;
+        return (
+          <RevealScreen
+            config={config}
+            session={sessionState}
+            onNext={() => engine.next()}
+            onInvalidAnswers={() => engine.goTo(STEPS.QUIZ)}
+          />
+        );
       case STEPS.CAMERA:
         return (
           <CameraScreen

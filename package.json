@@ -13,7 +13,8 @@
     "check": "node scripts/validate-config.js themes/know-your-dance",
     "assets": "node scripts/generate-assets.js themes/know-your-dance",
     "pack:win": "npm run build && electron-builder --win --publish never",
-    "pack:mac": "npm run build && electron-builder --mac --publish never"
+    "pack:mac": "npm run build && electron-builder --mac --publish never",
+    "pack:all": "npm run build && electron-builder --win --mac --publish never"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.2",
@@ -46,8 +47,22 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
       ],
+      "artifactName": "StoryMachine-${version}-${arch}.${ext}",
       "category": "public.app-category.entertainment"
     },
     "nsis": {

@@ -28,8 +28,13 @@ export function rankedTraits(traitScores) {
 /**
  * Pick the character whose weights best match the visitor's traits.
  * Score = Σ visitorTrait[t] * charWeight[t]. Deterministic tie-break by list order.
+ * Returns null when there is no positive trait signal instead of defaulting to
+ * the first character and hiding a broken quiz path.
  */
 export function selectCharacter(characters, traitScores) {
+  const hasSignal = Object.values(traitScores || {}).some((score) => score > 0);
+  if (!hasSignal) return null;
+
   let best = null;
   let bestScore = -Infinity;
   characters.forEach((c, order) => {
@@ -42,7 +47,7 @@ export function selectCharacter(characters, traitScores) {
       best = { character: c, score: s, order };
     }
   });
-  return best ? best.character : characters[0];
+  return best && best.score > 0 ? best.character : null;
 }
 
 /**
@@ -81,6 +86,20 @@ export function runReveal(charactersConfig, answers) {
   const traitScores = scoreTraits(answers);
   const ranked = rankedTraits(traitScores);
   const character = selectCharacter(charactersConfig.characters, traitScores);
+  if (!character) return { traitScores, ranked, character: null, revealText: null };
   const revealText = resolveReveal(character, traitScores, ranked);
   return { traitScores, ranked, character, revealText };
+}
+
+export function hasCompleteQuizAnswers(quizConfig, answers) {
+  const questions = quizConfig?.questions || [];
+  if (!questions.length || !Array.isArray(answers)) return false;
+
+  const answeredQuestionIds = new Set(
+    answers
+      .map((answer) => answer?.questionId)
+      .filter(Boolean)
+  );
+
+  return questions.every((question) => answeredQuestionIds.has(question.id));
 }

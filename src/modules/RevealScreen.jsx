@@ -3,25 +3,44 @@ import gsap from 'gsap';
 import confetti from 'canvas-confetti';
 import { ArrowRight } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
-import { runReveal } from './selection.js';
+import { hasCompleteQuizAnswers, runReveal } from './selection.js';
 import { getDanceProfile } from './dance-profiles.js';
 
-export default function RevealScreen({ config, session, onNext }) {
+export default function RevealScreen({ config, session, onNext, onInvalidAnswers }) {
   const containerRef = useRef(null);
+  const hasCompleteAnswers = hasCompleteQuizAnswers(config.quiz, session.answers || []);
   const { character, revealText, ranked, traitScores } = useMemo(
-    () => runReveal(config.characters, session.answers || []),
-    [config.characters, session.answers]
+    () => (hasCompleteAnswers
+      ? runReveal(config.characters, session.answers || [])
+      : { character: null, revealText: null, ranked: [], traitScores: {} }),
+    [config.characters, hasCompleteAnswers, session.answers]
   );
-  const profile = getDanceProfile(character.id);
+  const profile = getDanceProfile(character?.id);
   const maskPreviewPath = profile.maskAsset ? config.asset(profile.maskAsset) : null;
   const topTraits = ranked.slice(0, 4);
 
-  session.character = character;
-  session.revealText = revealText;
-  session.traitRanking = ranked;
-  session.traitScores = traitScores;
+  if (hasCompleteAnswers && character) {
+    session.character = character;
+    session.revealText = revealText;
+    session.traitRanking = ranked;
+    session.traitScores = traitScores;
+  }
 
   useEffect(() => {
+    if (hasCompleteAnswers && character) return undefined;
+    console.warn('Reveal reached without a complete quiz. Returning to questions.');
+    session.answers = [];
+    session.character = null;
+    session.revealText = null;
+    session.traitRanking = [];
+    session.traitScores = {};
+    const timer = window.setTimeout(() => onInvalidAnswers?.(), 700);
+    return () => window.clearTimeout(timer);
+  }, [character, hasCompleteAnswers, onInvalidAnswers, session]);
+
+  useEffect(() => {
+    if (!character) return undefined;
+
     confetti({
       particleCount: 120,
       spread: 90,
@@ -38,7 +57,20 @@ export default function RevealScreen({ config, session, onNext }) {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [character.id]);
+  }, [character]);
+
+  if (!hasCompleteAnswers || !character) {
+    return (
+      <section ref={containerRef} className="view-screen active">
+        <GlassCard className="glass-card-sm">
+          <div className="card-header">
+            <span>Questions Needed</span>
+            <p>Returning to the quiz so your mask is chosen from your answers.</p>
+          </div>
+        </GlassCard>
+      </section>
+    );
+  }
 
   return (
     <section ref={containerRef} className="view-screen active">

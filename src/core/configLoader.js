@@ -37,6 +37,7 @@ export async function loadExperience(themeId) {
   const experience = await readJson(themeId, 'experience.json');
   checkSchema(experience, 'experience.json');
   requireFields(experience, ['id', 'name', 'parts'], 'experience.json');
+  validateExperienceFlow(experience);
 
   const parts = experience.parts;
   requireFields(parts, ['story', 'quiz', 'characters', 'prompts', 'print', 'theme'], 'experience.parts');
@@ -76,6 +77,21 @@ export async function loadExperience(themeId) {
   };
 }
 
+function validateExperienceFlow(experience) {
+  const flow = experience.flow;
+  if (!Array.isArray(flow) || flow.length === 0) return;
+
+  const quiz = flow.indexOf('quiz');
+  const camera = flow.indexOf('camera');
+  const reveal = flow.indexOf('reveal');
+  if (quiz < 0 || camera < 0 || reveal < 0) {
+    throw new ConfigError('experience.flow must include quiz, camera, and reveal');
+  }
+  if (!(quiz < camera && camera < reveal)) {
+    throw new ConfigError('experience.flow must order quiz before camera before reveal');
+  }
+}
+
 function validateStory(story) {
   checkSchema(story, 'story.json');
   requireFields(story, ['beats'], 'story.json');
@@ -88,8 +104,14 @@ function validateStory(story) {
 function validateQuiz(quiz) {
   checkSchema(quiz, 'quiz.json');
   requireFields(quiz, ['questions'], 'quiz.json');
+  if (!Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+    throw new ConfigError('quiz.json "questions" must be a non-empty array');
+  }
   quiz.questions.forEach((q, i) => {
     requireFields(q, ['id', 'prompt', 'options'], `quiz.questions[${i}]`);
+    if (!Array.isArray(q.options) || q.options.length === 0) {
+      throw new ConfigError(`quiz.questions[${i}].options must be a non-empty array`);
+    }
     q.options.forEach((o, j) => {
       requireFields(o, ['label', 'traits'], `quiz.questions[${i}].options[${j}]`);
     });
