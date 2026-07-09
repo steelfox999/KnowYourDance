@@ -9,6 +9,13 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { startServer } = require('./server');
+const {
+  getPrintTimeoutMs,
+  normalizePageSize,
+  printWithFallback,
+  shouldFallbackToDialog,
+  withTimeout,
+} = require('./print');
 
 const ROOT = path.join(__dirname, '..');
 const THEMES_DIR = path.join(ROOT, 'themes');
@@ -75,12 +82,17 @@ ipcMain.handle('output:savePng', (_e, filename, base64) => {
 // Print an isolated print page (built by the renderer).
 ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
   const printWin = new BrowserWindow({ show: false });
+  const timeoutMs = getPrintTimeoutMs();
   const tempDir = fs.mkdtempSync(path.join(app.getPath('temp'), 'story-machine-print-'));
   const tempFile = path.join(tempDir, 'sheet.html');
   try {
     fs.writeFileSync(tempFile, html, 'utf-8');
-    await printWin.loadFile(tempFile);
-    await printWin.webContents.executeJavaScript(`
+    await withTimeout(
+      printWin.loadFile(tempFile),
+      timeoutMs,
+      'Loading print sheet'
+    );
+    await withTimeout(printWin.webContents.executeJavaScript(`
       Promise.all([
         document.fonts?.ready || Promise.resolve(),
         ...Array.from(document.images).map((img) => img.complete
@@ -90,10 +102,10 @@ ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
               img.onerror = resolve;
             }))
       ])
-    `);
+    `), timeoutMs, 'Waiting for print assets');
 
     const printOptions = {
-      silent: true,
+      silent: process.env.SM_PRINT_SILENT !== '0',
       printBackground: true,
       landscape: options.landscape === true,
       margins: { marginType: 'none' },
@@ -102,11 +114,10 @@ ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
     if (pageSize) printOptions.pageSize = pageSize;
     if (process.env.SM_PRINTER) printOptions.deviceName = process.env.SM_PRINTER;
 
-    return await new Promise((resolve, reject) => {
-      printWin.webContents.print(printOptions, (ok, failureReason) => {
-        if (ok) resolve(true);
-        else reject(new Error(failureReason || 'Silent print failed'));
-      });
+    return await printWithFallback(printWin, printOptions, {
+      timeoutMs,
+      fallbackToDialog: shouldFallbackToDialog(),
+      logger: console,
     });
   } finally {
     if (!printWin.isDestroyed()) {
@@ -115,13 +126,6 @@ ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
-
-function normalizePageSize(size) {
-  const width = Number(size?.width);
-  const height = Number(size?.height);
-  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return null;
-  return { width: Math.round(width), height: Math.round(height) };
-}
 
 function safeThemePath(themeId, relPath) {
   const base = path.join(THEMES_DIR, sanitize(themeId));
