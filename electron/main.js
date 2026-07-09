@@ -57,7 +57,14 @@ async function createWindow() {
 async function ensureMacCameraAccess() {
   if (process.platform !== 'darwin') return;
   try {
-    await systemPreferences.askForMediaAccess('camera');
+    // Without an explicit TCC grant, getUserMedia "succeeds" but streams black frames.
+    const granted = await systemPreferences.askForMediaAccess('camera');
+    if (!granted) {
+      console.warn(
+        '[camera] macOS camera access is %s. Enable it in System Settings > Privacy & Security > Camera, then relaunch.',
+        systemPreferences.getMediaAccessStatus('camera')
+      );
+    }
   } catch (err) {
     console.warn('Unable to request macOS camera access:', err);
   }

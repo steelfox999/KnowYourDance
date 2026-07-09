@@ -79,20 +79,29 @@ export default function PrintScreen({ config, session, onNext }) {
       console.warn('Error saving local PNG copy:', err);
     }
 
+    // Silent printing with a landscape custom page size is driver-dependent (the
+    // sheet came out portrait with the sides clipped), so always send a portrait
+    // page and rotate landscape sheets 90° into it.
     const [wmm, hmm] = pageMM(print);
+    const rotate = wmm > hmm;
+    const pw = rotate ? hmm : wmm;
+    const ph = rotate ? wmm : hmm;
+    const imgCss = rotate
+      ? `position:absolute; top:0; left:0; width:${wmm}mm; height:${hmm}mm; transform-origin:top left; transform:rotate(90deg) translateY(-100%);`
+      : `width:${wmm}mm; height:${hmm}mm; display:block;`;
     const html = `<!doctype html><html><head><style>
-      @page { size: ${wmm}mm ${hmm}mm; margin: 0; }
-      html,body { margin:0; padding:0; }
-      img { width:${wmm}mm; height:${hmm}mm; display:block; }
+      @page { size: ${pw}mm ${ph}mm; margin: 0; }
+      html,body { margin:0; padding:0; width:${pw}mm; height:${ph}mm; overflow:hidden; }
+      img { ${imgCss} }
     </style></head><body><img src="${sheetDataUrl}"></body></html>`;
 
     try {
       await withTimeout(
         printHtml(html, {
-          landscape: wmm > hmm,
+          landscape: false,
           pageSizeMicrons: {
-            width: Math.round(wmm * 1000),
-            height: Math.round(hmm * 1000),
+            width: Math.round(pw * 1000),
+            height: Math.round(ph * 1000),
           },
         }),
         RENDERER_PRINT_TIMEOUT_MS,
