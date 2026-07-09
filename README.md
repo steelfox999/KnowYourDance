@@ -19,7 +19,7 @@ mode just falls back to a file picker if it can't reach a webcam.
 
 ### The fastest way to see it (browser)
 
-You only need [Node.js](https://nodejs.org) (version 18 or newer). To check, open a terminal
+You only need [Node.js](https://nodejs.org) (version 22.12 or newer). To check, open a terminal
 and run `node --version`.
 
 ```bash
@@ -53,8 +53,8 @@ This opens a full-screen kiosk window.
 
 ### Windows
 
-1. **Install Node.js.** Download the "LTS" installer from <https://nodejs.org> and run it,
-   accepting the defaults. This also installs `npm`.
+1. **Install Node.js 22.12 or newer.** Download the current LTS installer from
+   <https://nodejs.org> and run it, accepting the defaults. This also installs `npm`.
 2. **Open a terminal in the project folder.** In File Explorer, open the `story-machine`
    folder, click the address bar, type `cmd`, and press Enter.
 3. **Install dependencies** (one time, needs internet just this once):
@@ -73,7 +73,7 @@ This opens a full-screen kiosk window.
 
 ### macOS
 
-1. **Install Node.js** from <https://nodejs.org> (the LTS installer), or with Homebrew:
+1. **Install Node.js 22.12 or newer** from <https://nodejs.org> (the LTS installer), or with Homebrew:
    `brew install node`.
 2. **Open Terminal** (Applications → Utilities → Terminal) and change into the project
    folder, e.g. `cd ~/Downloads/story-machine`.
@@ -148,10 +148,18 @@ npm run assets         # confirms artwork is checked in
 
 ## Printing
 
-The Print step composes an **A5 sheet with the original photo and masked photo**, with your
-frame on top, then sends it to the system print dialog. Set your printer's paper to **A5** and "actual
-size / 100%" (no scaling). Every printed sheet is also saved as a PNG to
+The Print step composes an **A5 sheet with the original photo and masked photos**, then sends
+it to the system printer. The desktop app attempts silent kiosk printing first; if Windows or
+the printer driver does not answer, it times out and opens the print dialog instead. Set your
+printer's paper to **A5** and "actual size / 100%" (no scaling). Every printed sheet is also saved as a PNG to
 **Pictures/StoryMachine/** so you have a copy.
+
+Print setup switches:
+
+- `SM_PRINT_SILENT=0` always opens the print dialog while testing.
+- `SM_PRINTER="Printer Name"` targets a specific printer for silent mode.
+- `SM_PRINT_TIMEOUT_MS=5000` lowers the print timeout while diagnosing printer setup.
+- `SM_PRINT_DIALOG_FALLBACK=0` disables the dialog fallback for unattended kiosk testing.
 
 ---
 
@@ -175,6 +183,7 @@ experience.
 | **`npm start` says "electron not found"** | Run `npm install` first. |
 | **Masks look off-center** | Adjust `anchor`, `scale`, `offsetY`, or `rotation` in the Prompt Builder. Negative `offsetY` moves the overlay up. |
 | **Print comes out shrunk** | In the print dialog set scale to 100% / "actual size" and paper to A5. |
+| **Print screen spins forever** | Update to the latest app build. For setup, run windowed with `SM_PRINT_SILENT=0` to confirm the Windows printer dialog can print, then set the default printer or `SM_PRINTER`. |
 | **Music doesn't play** | Browsers block audio until the first tap — it starts once the visitor interacts. Missing files are silently skipped. |
 | **Kiosk won't leave full screen** | Press `Esc`, or start windowed with `SM_KIOSK=0`. |
 | **QR code screen says "unavailable"** | Expected when offline or when no `deliveryBaseUrl` is set in the experience config. |

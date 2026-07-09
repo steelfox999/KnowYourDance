@@ -2,19 +2,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Loader2, Printer } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
+import { withTimeout } from '../core/async.mjs';
 import { printHtml, savePng } from '../core/platform.js';
+import { shouldStartAutoPrint } from './print-flow.mjs';
+import { RENDERER_PRINT_TIMEOUT_MS } from './print-timeouts.mjs';
 
 const MM_PER_INCH = 25.4;
+const COMPOSE_TIMEOUT_MS = 45000;
+const SAVE_TIMEOUT_MS = 15000;
+const RECOVERY_DELAY_MS = 1800;
 
 export default function PrintScreen({ config, session, onNext }) {
   const print = config.print || {};
   const [statusText, setStatusText] = useState('Rendering high-resolution keepsake sheet...');
   const [sheetDataUrl, setSheetDataUrl] = useState(null);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [hasAttemptedPrint, setHasAttemptedPrint] = useState(false);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const recoveryTimerRef = useRef(null);
 
   useEffect(() => {
+    let cancelled = false;
     gsap.fromTo(
       containerRef.current,
       { opacity: 0, y: 30 },
@@ -24,33 +33,48 @@ export default function PrintScreen({ config, session, onNext }) {
     (async () => {
       if (!canvasRef.current) return;
       try {
-        const url = await composeSheet(config, session, canvasRef.current);
+        const url = await withTimeout(
+          composeSheet(config, session, canvasRef.current),
+          COMPOSE_TIMEOUT_MS,
+          'Composing print sheet'
+        );
+        if (cancelled) return;
         setSheetDataUrl(url);
         setStatusText('Ready to print your keepsake sheet.');
       } catch (err) {
+        if (cancelled) return;
         console.error('Error composing print sheet:', err);
-        setStatusText('Ready to print.');
+        setStatusText('Unable to build print sheet. Continuing to digital copy.');
+        recoveryTimerRef.current = window.setTimeout(() => onNext(), RECOVERY_DELAY_MS);
       }
     })();
-  }, [config, session]);
+
+    return () => {
+      cancelled = true;
+      if (recoveryTimerRef.current) {
+        window.clearTimeout(recoveryTimerRef.current);
+      }
+    };
+  }, [config, session, onNext]);
 
   useEffect(() => {
-    if (!sheetDataUrl || isPrinting) return undefined;
+    if (!shouldStartAutoPrint({ sheetDataUrl, isPrinting, hasAttemptedPrint })) return undefined;
     const timer = window.setTimeout(() => {
       doPrint();
     }, 650);
     return () => window.clearTimeout(timer);
-  }, [sheetDataUrl, isPrinting]);
+  }, [sheetDataUrl, isPrinting, hasAttemptedPrint]);
 
   const doPrint = async () => {
     if (!sheetDataUrl || isPrinting) return;
 
+    setHasAttemptedPrint(true);
     setIsPrinting(true);
     setStatusText('Sending keepsake sheet to the printer...');
     const filename = `know_your_dance_${Date.now()}.png`;
 
     try {
-      await savePng(filename, sheetDataUrl);
+      await withTimeout(savePng(filename, sheetDataUrl), SAVE_TIMEOUT_MS, 'Saving local PNG copy');
     } catch (err) {
       console.warn('Error saving local PNG copy:', err);
     }
@@ -63,13 +87,17 @@ export default function PrintScreen({ config, session, onNext }) {
     </style></head><body><img src="${sheetDataUrl}"></body></html>`;
 
     try {
-      await printHtml(html, {
-        landscape: wmm > hmm,
-        pageSizeMicrons: {
-          width: Math.round(wmm * 1000),
-          height: Math.round(hmm * 1000),
-        },
-      });
+      await withTimeout(
+        printHtml(html, {
+          landscape: wmm > hmm,
+          pageSizeMicrons: {
+            width: Math.round(wmm * 1000),
+            height: Math.round(hmm * 1000),
+          },
+        }),
+        RENDERER_PRINT_TIMEOUT_MS,
+        'Sending print job'
+      );
       setStatusText('Print job sent.');
       setTimeout(() => onNext(), 1200);
     } catch (err) {
