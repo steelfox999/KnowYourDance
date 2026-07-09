@@ -69,6 +69,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    let newMusic = null;
+
     async function boot() {
       try {
         const params = new URLSearchParams(window.location.search);
@@ -76,11 +79,12 @@ export default function App() {
         const themeId = params.get('theme') || themes[0] || 'know-your-dance';
 
         const loadedConfig = await loadExperience(themeId);
+        if (cancelled) return;
         applyThemeTokens(loadedConfig.theme);
         setConfig(loadedConfig);
 
         const newEngine = new Engine({ config: loadedConfig });
-        const newMusic = new MusicEngine(loadedConfig);
+        newMusic = new MusicEngine(loadedConfig);
 
         newEngine.onStep = (step, currentSession) => {
           setCurrentStep(step);
@@ -100,6 +104,11 @@ export default function App() {
     }
 
     boot();
+
+    return () => {
+      cancelled = true;
+      if (newMusic) newMusic.stop();
+    };
   }, []);
 
   if (loading) {

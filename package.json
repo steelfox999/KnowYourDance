@@ -64,7 +64,10 @@
         }
       ],
       "artifactName": "StoryMachine-${version}-${arch}.${ext}",
-      "category": "public.app-category.entertainment"
+      "category": "public.app-category.entertainment",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Story Machine uses the camera to capture participant portraits for the Know Your Dance experience."
+      }
     },
     "nsis": {
       "oneClick": false,

@@ -5,7 +5,7 @@
  * exposes a minimal IPC surface for disk writes + printing. NO business logic
  * lives here; the engine and all theme behaviour run in the renderer, driven by JSON.
  */
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, systemPreferences } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { startServer } = require('./server');
@@ -43,6 +43,7 @@ async function createWindow() {
     },
   });
 
+  configureMediaPermissions(mainWindow.webContents.session);
   mainWindow.loadURL(baseUrl + '/index.html');
 
   mainWindow.webContents.on('before-input-event', (event, input) => {
@@ -51,6 +52,24 @@ async function createWindow() {
       mainWindow.setFullScreen(false);
     }
   });
+}
+
+async function ensureMacCameraAccess() {
+  if (process.platform !== 'darwin') return;
+  try {
+    await systemPreferences.askForMediaAccess('camera');
+  } catch (err) {
+    console.warn('Unable to request macOS camera access:', err);
+  }
+}
+
+function configureMediaPermissions(partition) {
+  partition.setPermissionRequestHandler((webContents, permission, callback) => {
+    callback(permission === 'media' && webContents === mainWindow?.webContents);
+  });
+  partition.setPermissionCheckHandler((webContents, permission) => (
+    permission === 'media' && webContents === mainWindow?.webContents
+  ));
 }
 
 /* ------------------------------- IPC ------------------------------- */
@@ -135,6 +154,9 @@ function safeThemePath(themeId, relPath) {
 }
 function sanitize(name) { return String(name).replace(/[^a-zA-Z0-9._-]/g, '_'); }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(async () => {
+  await ensureMacCameraAccess();
+  await createWindow();
+});
 app.on('window-all-closed', () => app.quit());
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

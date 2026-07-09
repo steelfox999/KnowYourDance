@@ -8,6 +8,7 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
   const [countdownNum, setCountdownNum] = useState(null);
   const [cameraError, setCameraError] = useState(false);
   const [flashVisible, setFlashVisible] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -19,13 +20,17 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
 
     async function initCamera() {
       try {
+        setVideoReady(false);
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: 'user' },
           audio: false,
         });
         activeStream = mediaStream;
         setStream(mediaStream);
-        if (videoRef.current) videoRef.current.srcObject = mediaStream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+          try { await videoRef.current.play(); } catch (_) { /* muted autoplay may still wait for metadata */ }
+        }
         setStatusText('Align your face in the guide before pressing Capture Portrait.');
       } catch (err) {
         console.error('Camera access error:', err);
@@ -51,6 +56,16 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
+    }
+    setVideoReady(false);
+  };
+
+  const handleVideoReady = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    try { await video.play(); } catch (_) { /* camera preview will continue once Electron allows it */ }
+    if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
+      setVideoReady(true);
     }
   };
 
@@ -93,9 +108,13 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
   const snap = () => {
     if (!videoRef.current || !canvasRef.current) return;
     const video = videoRef.current;
+    if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
+      setStatusText('Camera is still starting. Please wait a moment and try again.');
+      return;
+    }
     const canvas = canvasRef.current;
-    const width = video.videoWidth || 1280;
-    const height = video.videoHeight || 960;
+    const width = video.videoWidth;
+    const height = video.videoHeight;
 
     canvas.width = width;
     canvas.height = height;
@@ -132,7 +151,14 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
 
         <div className="camera-viewport">
           {!cameraError && (
-            <video ref={videoRef} autoPlay playsInline muted />
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              onLoadedMetadata={handleVideoReady}
+              onCanPlay={handleVideoReady}
+            />
           )}
 
           {cameraError && (
@@ -170,11 +196,11 @@ export default function CameraScreen({ session, onNext, onGoTo }) {
             <button
               type="button"
               onClick={startCountdown}
-              disabled={countdownNum !== null}
+              disabled={!videoReady || countdownNum !== null}
               className="btn-royal"
             >
               <Camera size={18} />
-              <span>Capture Portrait</span>
+              <span>{videoReady ? 'Capture Portrait' : 'Camera Starting...'}</span>
             </button>
           ) : (
             <button type="button" onClick={handleRetry} className="btn-outline">

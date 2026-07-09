@@ -12,11 +12,17 @@ export class MusicEngine {
     this.volume = music.volume ?? 0.5;
     this.current = null;
     this.currentKey = null;
+    this.playToken = 0;
   }
 
   async onStep(step) {
     const rel = this.map[step] || this.defaultTrack;
-    if (rel === this.currentKey && this.current && !this.current.paused) return; // same track keeps playing
+    if (rel === this.currentKey && this.current) {
+      if (this.current.paused) {
+        try { await this.current.play(); } catch (_) { /* autoplay blocked — stay silent */ }
+      }
+      return; // same track keeps playing
+    }
 
     if (rel !== this.currentKey) {
       this._fadeOut(this.current);
@@ -27,14 +33,28 @@ export class MusicEngine {
     if (!rel) return;
     try {
       const url = this._resolveTrack(rel);
+      const token = ++this.playToken;
       const audio = new Audio(url);
       audio.loop = true;
       audio.volume = 0;
-      await audio.play();
-      this._fadeIn(audio);
+      audio.playbackRate = 1;
+      audio.defaultPlaybackRate = 1;
       this.current = audio;
       this.currentKey = rel;
+      await audio.play();
+      if (token !== this.playToken) {
+        audio.pause();
+        return;
+      }
+      this._fadeIn(audio);
     } catch (_) { /* autoplay blocked or file missing — stay silent */ }
+  }
+
+  stop() {
+    this.playToken += 1;
+    this._fadeOut(this.current);
+    this.current = null;
+    this.currentKey = null;
   }
 
   _resolveTrack(rel) {
