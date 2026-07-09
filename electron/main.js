@@ -75,8 +75,11 @@ ipcMain.handle('output:savePng', (_e, filename, base64) => {
 // Print an isolated print page (built by the renderer).
 ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
   const printWin = new BrowserWindow({ show: false });
+  const tempDir = fs.mkdtempSync(path.join(app.getPath('temp'), 'story-machine-print-'));
+  const tempFile = path.join(tempDir, 'sheet.html');
   try {
-    await printWin.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+    fs.writeFileSync(tempFile, html, 'utf-8');
+    await printWin.loadFile(tempFile);
     await printWin.webContents.executeJavaScript(`
       Promise.all([
         document.fonts?.ready || Promise.resolve(),
@@ -109,6 +112,7 @@ ipcMain.handle('print:sheet', async (_e, html, options = {}) => {
     if (!printWin.isDestroyed()) {
       printWin.close();
     }
+    fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
 
