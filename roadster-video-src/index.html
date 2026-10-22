@@ -68,10 +68,8 @@
       }
       .card .k { font-size: 24px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
       .card .n { font-family: var(--font-display); font-size: 64px; font-weight: 800; margin-top: 12px; letter-spacing: -0.02em; }
-      .card .d { font-size: 28px; color: var(--muted); margin-top: 18px; line-height: 1.4; }
-      .card .p { position: absolute; bottom: 40px; left: 40px; font-size: 34px; font-weight: 700; color: var(--ink); }
-      .card .p em { font-style: normal; color: var(--red); }
-    </style>
+      .card .d { font-size: 30px; color: var(--ink); color: var(--muted); margin-top: 18px; line-height: 1.4; }
+          </style>
   </head>
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-duration="55" data-width="1920" data-height="1080">
@@ -83,7 +81,7 @@
         <div style="position:absolute;left:0;width:1920px;top:250px;text-align:center">
           <div class="step" id="s1kicker">Unveiled Oct 15, 2026 · Waco, Texas</div>
           <div id="s1title" style="font-family:var(--font-display);font-weight:900;font-size:150px;letter-spacing:-0.04em;margin-top:16px">TESLA ROADSTER</div>
-          <div id="s1sub" style="font-size:40px;color:var(--muted);margin-top:6px">How a car drives upside down, and flies</div>
+          <div id="s1sub" style="font-size:40px;color:var(--muted);margin-top:6px">How a car can drive on the ceiling, and fly</div>
         </div>
         <div style="position:absolute;left:0;top:850px;width:1920px;height:3px;background:linear-gradient(90deg,transparent,#2c3a5e,transparent)"></div>
       </div>
@@ -98,15 +96,15 @@
           <g fill="none" stroke-width="3">
             <path id="ln-fan" d="M 960 690 L 960 830" stroke="var(--air)"/>
             <path id="ln-thr" d="M 445 560 L 300 470" stroke="var(--thrust)"/>
-            <path id="ln-tank" d="M 960 505 L 960 330" stroke="var(--air)"/>
-            <path id="ln-bat" d="M 1210 505 L 1440 420" stroke="var(--ink)"/>
+            <path id="ln-tank" d="M 908 512 L 908 330" stroke="var(--air)"/>
+            <path id="ln-att" d="M 1397 630 L 1560 760" stroke="var(--thrust)"/>
           </g>
         </svg>
         <div class="car" id="s2car" style="width:1260px;height:390px;left:330px;top:330px"></div>
-        <div class="label" id="lb-fan" style="left:760px;top:840px;color:var(--air);text-align:center;width:400px">Underbody fans<span>pull air out from under a sealed floor</span></div>
-        <div class="label" id="lb-thr" style="left:110px;top:370px;color:var(--thrust)">Cold-gas thrusters<span>10 nozzles, rear and underside</span></div>
-        <div class="label" id="lb-tank" style="left:830px;top:250px;color:var(--air)">Compressed-air tanks<span>about 600 L of high-pressure air</span></div>
-        <div class="label" id="lb-bat" style="left:1390px;top:330px">Battery-electric<span>drives the wheels and fans</span></div>
+        <div class="label" id="lb-fan" style="left:760px;top:840px;color:var(--air);text-align:center;width:400px">Underbody fans<span>suck air from under a sealed floor</span></div>
+        <div class="label" id="lb-thr" style="left:110px;top:370px;color:var(--thrust)">4 rear thrusters<span>big push to speed up</span></div>
+        <div class="label" id="lb-tank" style="left:780px;top:250px;color:var(--air)">Air tanks<span>200 to 600 liters of tightly squeezed air</span></div>
+        <div class="label" id="lb-att" style="left:1480px;top:770px;color:var(--thrust)">6 small thrusters<span>tip and roll the car in mid-air</span></div>
       </div>
 
       <!-- ============ SCENE 3+4 · WALL, CEILING, DROP ============ -->
@@ -124,8 +122,8 @@
           <path id="track" d="M 100 900 L 1100 900 A 200 200 0 0 0 1300 700 L 1300 530 A 200 200 0 0 0 1100 330 L 500 330" fill="none" stroke="var(--structure)" stroke-width="30" stroke-linecap="square"/>
           <!-- force arrows (ceiling) -->
           <g id="f-weight" opacity="0">
-            <line x1="640" y1="460" x2="640" y2="570" stroke="var(--weight)" stroke-width="12" marker-end="url(#ahR)"/>
-            <text x="590" y="615" fill="var(--weight)" font-size="32" font-weight="700" font-family="Inter">Weight</text>
+            <line x1="640" y1="460" x2="640" y2="540" stroke="var(--weight)" stroke-width="12" marker-end="url(#ahR)"/>
+            <text x="590" y="585" fill="var(--weight)" font-size="32" font-weight="700" font-family="Inter">Weight</text>
           </g>
           <g id="f-grip" opacity="0">
             <line x1="790" y1="620" x2="790" y2="460" stroke="var(--grip)" stroke-width="20" marker-end="url(#ahG)"/>
@@ -137,7 +135,7 @@
             <line id="f-thrust-line" x1="0" y1="0" x2="0" y2="-150" stroke="var(--thrust)" stroke-width="16" marker-end="url(#ahT)"/>
             <text x="30" y="-90" fill="var(--thrust)" font-size="32" font-weight="700" font-family="Inter">Thrust</text>
             <line x1="-150" y1="80" x2="-150" y2="190" stroke="var(--air)" stroke-width="10" marker-end="url(#ahA)"/>
-            <text x="-330" y="160" fill="var(--air)" font-size="28" font-weight="700" font-family="Inter">Gas out</text>
+            <text x="-130" y="185" fill="var(--air)" font-size="28" font-weight="700" font-family="Inter">Gas out</text>
           </g>
         </svg>
         <div class="car" id="s3car" style="width:300px;height:108px"></div>
@@ -150,20 +148,35 @@
         <div class="note" id="s3noteA" style="left:110px;top:705px;width:900px">
           Fans suck air out from under the sealed floor.<br/>
           Less pressure underneath, so the <b>outside air pushes the car onto the surface</b>.<br/>
-          <span class="g">Push from the air</span> &gt; <span class="w">weight</span>, so it stays on the ceiling.
+          The <span class="g">push from the air</span> is bigger than the car's <span class="w">weight</span>, so it stays up, even when parked.
         </div>
-        <div class="note" id="s3eq" style="left:1360px;top:640px;width:430px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:32px">
-          <span class="g">F = ΔP × A</span><br/><span style="font-size:24px;color:var(--muted);font-family:Inter">pressure drop × floor area</span>
+        <div class="note" id="s3eq" style="left:1360px;top:620px;width:430px;text-align:center">
+          <span class="g" style="font-family:var(--font-display);font-size:64px;font-weight:800">Up to 2×</span><br/><span style="font-size:24px;color:var(--muted)">the car's weight in grip<br/>(Tesla's claim)</span>
         </div>
 
         <div class="head" id="s3headB" style="opacity:0">
           <div class="step">Trick 2</div>
           <div class="h">Fall, roll, land softly</div>
         </div>
-        <div class="note" id="s3noteB" style="left:780px;top:600px;width:980px;opacity:0">
-          It launches off the ledge and rolls upright in mid-air.
-          <span class="t">Cold-gas thrusters</span> fire downward: compressed air rushes out,
-          and the car is pushed the other way (Newton's 3rd law), so the fall slows to a soft touchdown.
+        <div class="note" id="s3inset" style="left:1380px;top:250px;width:420px;height:330px;padding:18px;opacity:0">
+          <div style="font-size:22px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);font-weight:600">Front view: barrel roll</div>
+          <svg viewBox="0 0 380 230" width="380" height="230" style="overflow:visible;display:block">
+            <g id="fv" transform="translate(190 120)">
+              <g class="fvJetA" opacity="0"><path d="M100 -18 L130 -110 L80 -110 L92 -18 Z" fill="#cfefff"/></g>
+              <g class="fvJetB" opacity="0"><path d="M-100 -18 L-130 -110 L-80 -110 L-92 -18 Z" fill="#cfefff"/></g>
+              <path d="M-60 -22 L-42 -60 L42 -60 L60 -22 Z" fill="#141a28"/>
+              <rect x="-110" y="-26" width="220" height="50" rx="18" fill="#d81d3a"/>
+              <rect x="-112" y="14" width="30" height="34" rx="6" fill="#12151d"/>
+              <rect x="82" y="14" width="30" height="34" rx="6" fill="#12151d"/>
+            </g>
+          </svg>
+          <div id="fvA" style="font-size:22px;color:var(--ink);opacity:0;position:absolute;left:18px;bottom:44px">Fire one side to <b>start</b> the roll…</div>
+          <div id="fvB" style="font-size:22px;color:var(--ink);opacity:0;position:absolute;left:18px;bottom:14px">…the other side to <b>stop</b> it.</div>
+        </div>
+        <div class="note" id="s3noteB" style="left:780px;top:620px;width:980px;opacity:0">
+          It drops off the ledge and does a <span class="t">barrel roll</span>, spinning along its length,
+          so it ends up right-side up and still pointing the same way. Then thrusters fire downward: air
+          rushes out, the car is pushed up (Newton's 3rd law), and it lands softly on all four wheels.
         </div>
       </div>
 
@@ -173,54 +186,58 @@
           <rect x="0" y="880" width="1920" height="200" fill="#111a30"/>
           <rect x="0" y="876" width="1920" height="6" fill="var(--structure)"/>
           <g id="dashes" fill="#3a4870"></g>
-          <!-- box truck -->
-          <g id="truck" transform="translate(780 560)">
-            <rect x="0" y="0" width="300" height="270" rx="10" fill="#d9dee8"/>
-            <rect x="300" y="90" width="110" height="180" rx="14" fill="#b8c0d0"/>
-            <rect x="320" y="110" width="70" height="60" rx="6" fill="#28324c"/>
-            <rect x="0" y="262" width="410" height="22" fill="#5b667f"/>
-            <circle cx="80" cy="290" r="30" fill="#1a1f2b"/><circle cx="80" cy="290" r="12" fill="#6b7590"/>
-            <circle cx="340" cy="290" r="30" fill="#1a1f2b"/><circle cx="340" cy="290" r="12" fill="#6b7590"/>
+          <!-- semi truck cab, 13.5 ft tall x ~20 ft long at 23.5 px/ft -->
+          <g id="truck" transform="translate(760 558)">
+            <path d="M0 290 L0 40 Q0 0 40 0 L290 0 Q370 8 410 110 L452 220 Q470 250 470 285 L470 290 Z" fill="#dfe4ec"/>
+            <path d="M318 18 L372 26 Q392 40 412 112 L345 112 Z" fill="#28324c"/>
+            <rect x="0" y="270" width="470" height="20" fill="#9aa3b5"/>
+            <circle cx="80" cy="278" r="40" fill="#1a1f2b"/><circle cx="80" cy="278" r="15" fill="#6b7590"/>
+            <circle cx="170" cy="278" r="40" fill="#1a1f2b"/><circle cx="170" cy="278" r="15" fill="#6b7590"/>
+            <circle cx="390" cy="278" r="40" fill="#1a1f2b"/><circle cx="390" cy="278" r="15" fill="#6b7590"/>
           </g>
-          <path id="arc" d="M 300 870 Q 960 -80 1620 870" fill="none" stroke="var(--thrust)" stroke-width="3" stroke-dasharray="10 14" opacity="0"/>
+          <path id="arc" d="M 305 876 Q 965 -390 1625 876" fill="none" stroke="var(--thrust)" stroke-width="3" stroke-dasharray="10 14" opacity="0"/>
+          <g id="dims" opacity="0" font-family="Inter" font-weight="700" font-size="28">
+            <path d="M 728 558 L 728 876 M 716 558 L 740 558 M 716 876 L 740 876" stroke="var(--muted)" stroke-width="3"/>
+            <text x="708" y="725" fill="var(--muted)" text-anchor="end">13.5 ft</text>
+            <path d="M 1780 243 L 1780 876 M 1768 243 L 1792 243 M 1768 876 L 1792 876" stroke="var(--thrust)" stroke-width="3"/>
+            <path d="M 965 243 L 1768 243" stroke="var(--thrust)" stroke-width="2" stroke-dasharray="6 8"/>
+            <text x="1765" y="560" fill="var(--thrust)" text-anchor="end">27 ft</text>
+          </g>
         </svg>
         <div class="car" id="s5car" style="width:330px;height:118px"></div>
         <div class="head">
           <div class="step">Trick 3</div>
-          <div class="h">Hopping over traffic</div>
+          <div class="h">Hop over a truck</div>
         </div>
         <div class="note" id="s5note" style="left:110px;top:910px;width:820px;opacity:0">
-          The underside thrusters fire together for a burst of <span class="t">lift</span>. The car flies over the truck, twists, and lands.
+          Thrusters blast the car about <span class="t">27 feet</span> up, twice as tall as a Tesla Semi. It does a full roll and lands facing forward.
         </div>
         <div class="note" id="s5note2" style="left:1000px;top:910px;width:810px;opacity:0">
-          The air supply runs out fast, so these are <b>short hops, not sustained flight.</b>
+          The air tanks empty in seconds, so these are <b>short hops, not flying like a plane.</b>
         </div>
       </div>
 
       <!-- ============ SCENE 6 · LINEUP ============ -->
       <div id="s6" class="clip" data-start="47" data-duration="8" data-track-index="0">
         <div class="head" style="text-align:center;left:0;width:1920px">
-          <div class="step">The lineup</div>
-          <div class="h">Three ways to defy gravity</div>
+          <div class="step">Recap</div>
+          <div class="h">Three big ideas</div>
         </div>
         <div class="card" id="c1" style="left:150px">
-          <div class="k">Road car</div><div class="n">Performance</div>
-          <div class="d">The street Roadster, no thrusters.</div>
-          <div class="p"><em>$50k</em> deposit</div>
+          <div class="k">Idea 1</div><div class="n" style="color:var(--grip)">Suction</div>
+          <div class="d">Fans pull air from under the car. The air around it pushes it onto the road, a wall, even a ceiling.</div>
         </div>
         <div class="card" id="c2" style="left:700px">
-          <div class="k">SpaceX package</div><div class="n">Thrust</div>
-          <div class="d">Adds cold-gas acceleration thrusters.</div>
-          <div class="p"><em>$250k</em> deposit</div>
+          <div class="k">Idea 2</div><div class="n" style="color:var(--thrust)">Push back</div>
+          <div class="d">Air blasts out one way, so the car moves the other way. That's Newton's 3rd law.</div>
         </div>
         <div class="card" id="c3" style="left:1250px">
-          <div class="k">Single seat</div><div class="n">Rocket</div>
-          <div class="d">The most extreme version.</div>
-          <div class="p"><em>Invite</em> only</div>
+          <div class="k">Idea 3</div><div class="n" style="color:var(--air)">Short bursts</div>
+          <div class="d">The squeezed air runs out in seconds, so the car hops instead of flying like a plane.</div>
         </div>
         <div id="s6foot" style="position:absolute;left:0;width:1920px;top:860px;text-align:center">
-          <div style="font-family:var(--font-display);font-size:48px;font-weight:800">Production planned for 2028</div>
-          <div style="font-size:22px;color:var(--muted);margin-top:18px">Illustrative animation, not to scale. Details as reported by TechCrunch, CNBC and CBC, Oct 2026.</div>
+          <div style="font-family:var(--font-display);font-size:40px;font-weight:800">Fun fact: nobody was inside. The “driver” was a mannequin in a spacesuit!</div>
+          <div style="font-size:22px;color:var(--muted);margin-top:18px">Staged stunts by professionals at a test site. Simplified illustration of Tesla's Oct 2026 reveal; some figures are Tesla's own claims.</div>
         </div>
       </div>
     </div>
@@ -258,11 +275,8 @@
           <path d="M60 86 L380 92" stroke="#ff8a9a" stroke-opacity="0.35" stroke-width="2"/>
           <!-- tank (shown in anatomy) -->
           <g class="tank" opacity="0">
-            <rect x="140" y="70" width="140" height="28" rx="14" fill="none" stroke="#5fd4ff" stroke-width="3" stroke-dasharray="6 5"/>
-          </g>
-          <!-- battery (shown in anatomy) -->
-          <g class="battery" opacity="0">
-            <rect x="284" y="62" width="36" height="18" rx="4" fill="none" stroke="#f4f6fb" stroke-width="3" stroke-dasharray="6 5"/>
+            <rect x="34" y="72" width="80" height="24" rx="12" fill="none" stroke="#5fd4ff" stroke-width="3" stroke-dasharray="6 5"/>
+            <rect x="150" y="72" width="80" height="24" rx="12" fill="none" stroke="#5fd4ff" stroke-width="3" stroke-dasharray="6 5"/>
           </g>
           <!-- rear thruster nozzles -->
           <g class="nozR" fill="#2a2f3d">
@@ -332,18 +346,19 @@
       tl.to("#s2car .fan", { opacity: 0.5, duration: 0.25, repeat: 9, yoyo: true }, 6.3);
       callout("#ln-fan", "#lb-fan", 6.0);
       // thrusters
-      tl.to(["#s2car .nozR", "#s2car .nozD"], { fill: "#ffb347", duration: 0.3 }, 7.6);
+      tl.to("#s2car .nozR", { fill: "#ffb347", duration: 0.3 }, 7.6);
       tl.fromTo("#s2car .jetRear", { opacity: 0 }, { opacity: 0.85, duration: 0.3 }, 7.8);
-      tl.fromTo("#s2car .jetDown", { opacity: 0 }, { opacity: 0.85, duration: 0.3 }, 7.8);
-      flicker("#s2car .jetDown", 7.8, 1.6);
-      tl.to(["#s2car .jetRear", "#s2car .jetDown"], { opacity: 0, duration: 0.4 }, 9.4);
+      tl.to("#s2car .jetRear", { opacity: 0, duration: 0.4 }, 9.4);
       callout("#ln-thr", "#lb-thr", 7.6);
       // tanks
       tl.to("#s2car .tank", { opacity: 1, duration: 0.4 }, 9.6);
       callout("#ln-tank", "#lb-tank", 9.6);
-      // battery
-      tl.to("#s2car .battery", { opacity: 1, duration: 0.4 }, 11.2);
-      callout("#ln-bat", "#lb-bat", 11.2);
+      // small attitude thrusters
+      tl.to("#s2car .nozD", { fill: "#ffb347", duration: 0.3 }, 11.2);
+      tl.fromTo("#s2car .jetDown", { opacity: 0 }, { opacity: 0.85, duration: 0.3 }, 11.4);
+      flicker("#s2car .jetDown", 11.4, 1.4);
+      tl.to("#s2car .jetDown", { opacity: 0, duration: 0.4 }, 12.8);
+      callout("#ln-att", "#lb-att", 11.2);
       tl.to("#s2 > *", { opacity: 0, duration: 0.5 }, 13.5);
 
       // ---------- SCENE 3 · wall & ceiling ----------
@@ -381,10 +396,24 @@
       tl.seek(26.3);
       const X0 = gsap.getProperty("#s3car", "x"), Y0 = gsap.getProperty("#s3car", "y"), R0 = gsap.getProperty("#s3car", "rotation");
       tl.seek(0);
-      // leave the ledge: free fall + roll upright
-      tl.to("#s3car", { x: X0 - 230, duration: 4.6, ease: "power1.out" }, 26.3);
+      // leave the ledge: free fall + a half barrel roll (spin about the car's long axis).
+      // Side-on, rolling looks like the car's height flipping through zero (scaleY = cos of roll angle),
+      // so it ends upright still pointing left, the way it was driving.
+      tl.set("#s3car", { rotation: R0 }, 26.3);
+      tl.to("#s3car", { x: X0 - 100, duration: 4.6, ease: "power1.out" }, 26.3);
       tl.to("#s3car", { y: Y0 + 330, duration: 1.6, ease: "power2.in" }, 26.3);
-      tl.to("#s3car", { rotation: R0 + 180, duration: 1.5, ease: "power1.inOut" }, 26.4);
+      tl.fromTo("#s3car", { scaleY: 1 }, { scaleY: -1, duration: 1.5, ease: "sine.inOut" }, 26.4);
+      // front-view inset of the same roll (linear angle, so it matches the side-on cosine)
+      tl.to("#s3inset", { opacity: 1, duration: 0.3 }, 25.9);
+      tl.set("#fv", { attr: { transform: "translate(190 120) rotate(180)" } }, 25.9);
+      tl.to("#fv", { attr: { transform: "translate(190 120) rotate(360)" }, duration: 1.5, ease: "none" }, 26.4);
+      tl.to("#s3inset .fvJetA", { opacity: 1, duration: 0.08 }, 26.35);
+      tl.to("#s3inset .fvJetA", { opacity: 0, duration: 0.2 }, 26.75);
+      tl.to("#fvA", { opacity: 1, duration: 0.3 }, 26.4);
+      tl.to("#s3inset .fvJetB", { opacity: 1, duration: 0.08 }, 27.5);
+      tl.to("#s3inset .fvJetB", { opacity: 0, duration: 0.2 }, 27.9);
+      tl.to("#fvB", { opacity: 1, duration: 0.3 }, 27.5);
+      tl.to("#s3inset", { opacity: 0, duration: 0.4 }, 32.6);
       // thrusters brake the fall
       tl.to("#s3car .jetDown", { opacity: 1, duration: 0.15 }, 27.8);
       flicker("#s3car .jetDown", 27.8, 3.1);
@@ -392,18 +421,18 @@
       tl.to("#s3car .jetDown", { opacity: 0, duration: 0.4 }, 30.8);
       tl.fromTo("#s3noteB", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 28.0);
       // thrust/gas arrows that follow the car during braking
-      tl.set("#f-thrust", { attr: { transform: "translate(420 440)" } }, 27.8);
+      tl.set("#f-thrust", { attr: { transform: "translate(540 440)" } }, 27.8);
       tl.to("#f-thrust", { opacity: 1, duration: 0.3 }, 28.0);
-      tl.to("#f-thrust", { attr: { transform: "translate(400 770)" }, duration: 2.9, ease: "power2.out" }, 27.9);
+      tl.to("#f-thrust", { attr: { transform: "translate(540 770)" }, duration: 2.9, ease: "power2.out" }, 27.9);
       tl.to("#f-thrust", { opacity: 0, duration: 0.4 }, 30.6);
       // touchdown, then drive away
-      tl.to("#s3car", { x: X0 - 230 + 1700, duration: 2.6, ease: "power2.in" }, 33.2);
+      tl.to("#s3car", { x: X0 - 100 - 1000, duration: 2.6, ease: "power2.in" }, 33.2);
       spin("#s3car .wheel", 33.2, 2.6, 8);
       tl.to("#s3car .jetRear", { opacity: 1, duration: 0.2 }, 34.0);
       tl.to(["#s3svg", "#s3headB", "#s3noteB"], { opacity: 0, duration: 0.5 }, 36.4);
 
       // ---------- SCENE 5 · hop over truck ----------
-      tl.set("#s5car", { x: -400, y: 760, transformOrigin: "50% 50%" }, 37.0);
+      tl.set("#s5car", { x: -400, y: 774, transformOrigin: "50% 50%" }, 37.0);
       tl.fromTo("#s5svg", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 37.0);
       tl.fromTo("#s5 .head", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 37.1);
       tl.to("#s5car", { x: 140, duration: 2.0, ease: "power2.out" }, 37.2);
@@ -415,9 +444,13 @@
       flicker("#s5car .jetDown", 39.2, 0.9);
       tl.to("#s5car .jetDown", { opacity: 0, duration: 0.3 }, 40.1);
       tl.to("#s5car", { x: 1460, duration: 2.6, ease: "none" }, 39.3);
-      tl.to("#s5car", { y: 760 - 480, duration: 1.3, ease: "power3.out" }, 39.3);
-      tl.to("#s5car", { y: 760, duration: 1.3, ease: "power2.in" }, 40.6);
-      tl.to("#s5car", { rotation: -360, duration: 1.2, ease: "power1.inOut" }, 40.0);
+      // quadratic rise/fall with linear x = the dashed parabola; apex is 27 ft (633 px) up
+      tl.to("#s5car", { y: 774 - 633, duration: 1.3, ease: "power1.out" }, 39.3);
+      tl.to("#s5car", { y: 774, duration: 1.3, ease: "power1.in" }, 40.6);
+      // full 360° barrel roll about the long axis: height goes 1 -> -1 -> 1, nose keeps pointing forward
+      tl.fromTo("#s5car", { scaleY: 1 }, { scaleY: -1, duration: 0.8, ease: "sine.inOut" }, 39.8);
+      tl.to("#s5car", { scaleY: 1, duration: 0.8, ease: "sine.inOut" }, 40.6);
+      tl.to("#dims", { opacity: 1, duration: 0.5 }, 40.4);
       // soft landing puff
       tl.to("#s5car .jetDown", { opacity: 0.9, duration: 0.1 }, 41.5);
       tl.to("#s5car .jetDown", { opacity: 0, duration: 0.4 }, 41.9);
